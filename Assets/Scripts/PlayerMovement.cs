@@ -8,10 +8,14 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 12f;
     public float diagonalJumpSpeed = 5f;
 
-    [Header("Referencias de Hitboxes")]
-    public GameObject hitboxNormal;
-    public GameObject hitboxCrouch;
-    public GameObject hitboxJump;
+    [Header("Tiempos Salto Vertical")]
+    public float timeInFrame1 = 0.08f;
+    public float timeInFrame2 = 0.1f;
+
+    [Header("Referencias de Hurtboxes (Hijos con Trigger)")]
+    public GameObject hurtboxNormal;
+    public GameObject hurtboxCrouch;
+    public GameObject hurtboxJump;
 
     [Header("Referencias Generales")]
     public Transform rival;
@@ -37,8 +41,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
-        // Aseguramos un estado inicial
-        UpdateHitboxes();
+        UpdateHurtboxes();
     }
 
     void Update()
@@ -59,8 +62,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         LookAtRival();
-        UpdateHitboxes(); // Cambia la hitbox activa según el estado
-        UpdateAnimations();
+        if (!isDiagonalJump) HandleVerticalJumpTimer();
+
+        UpdateHurtboxes();
+        UpdateAnimations(); // <--- Aquí restauré la llamada a la lógica
     }
 
     void HandleInput()
@@ -94,26 +99,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Lógica para prender y apagar los objetos de colisión
-    void UpdateHitboxes()
+    void UpdateHurtboxes()
     {
         if (!isGrounded)
         {
-            hitboxJump.SetActive(true);
-            hitboxNormal.SetActive(false);
-            hitboxCrouch.SetActive(false);
+            hurtboxJump.SetActive(true);
+            hurtboxNormal.SetActive(false);
+            hurtboxCrouch.SetActive(false);
         }
         else if (isCrouching)
         {
-            hitboxJump.SetActive(false);
-            hitboxNormal.SetActive(false);
-            hitboxCrouch.SetActive(true);
+            hurtboxJump.SetActive(false);
+            hurtboxNormal.SetActive(false);
+            hurtboxCrouch.SetActive(true);
         }
         else
         {
-            hitboxJump.SetActive(false);
-            hitboxNormal.SetActive(true);
-            hitboxCrouch.SetActive(false);
+            hurtboxJump.SetActive(false);
+            hurtboxNormal.SetActive(true);
+            hurtboxCrouch.SetActive(false);
         }
     }
 
@@ -134,16 +138,80 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void StartVerticalJump() { isDiagonalJump = false; rb.linearVelocity = new Vector2(0, jumpForce); currentJumpPhase = 1; }
-    void StartDiagonalJump(float inputDir) { isDiagonalJump = true; lockedHorizontalSpeed = inputDir * diagonalJumpSpeed; rb.linearVelocity = new Vector2(lockedHorizontalSpeed, jumpForce); }
+    void StartVerticalJump()
+    {
+        isDiagonalJump = false;
+        rb.linearVelocity = new Vector2(0, jumpForce);
+        currentJumpPhase = 1;
+        jumpTimer = 0f;
+    }
 
-    // (Mantener el resto de funciones como LookAtRival, CalculateSpeed, etc.)
+    void StartDiagonalJump(float inputDir)
+    {
+        isDiagonalJump = true;
+        lockedHorizontalSpeed = inputDir * diagonalJumpSpeed;
+        rb.linearVelocity = new Vector2(lockedHorizontalSpeed, jumpForce);
+        bool movingForward = (rival.position.x > transform.position.x && inputDir > 0) || (rival.position.x < transform.position.x && inputDir < 0);
+        flipDirection = movingForward ? 1 : -1;
+    }
+
+    void HandleVerticalJumpTimer()
+    {
+        if (currentJumpPhase == 0) return;
+        jumpTimer += Time.deltaTime;
+        switch (currentJumpPhase)
+        {
+            case 1: if (jumpTimer >= timeInFrame1) { currentJumpPhase = 2; jumpTimer = 0f; } break;
+            case 2: if (jumpTimer >= timeInFrame2) { currentJumpPhase = 3; jumpTimer = 0f; } break;
+            case 3: if (rb.linearVelocity.y < -1f) { currentJumpPhase = 4; jumpTimer = 0f; } break;
+            case 4: if (rb.linearVelocity.y < -8f || jumpTimer >= timeInFrame2) { currentJumpPhase = 5; jumpTimer = 0f; } break;
+        }
+    }
+
+    void LookAtRival()
+    {
+        if (rival != null && isGrounded && !isAttacking && !isBlocking)
+        {
+            if (rival.position.x > transform.position.x) visualPart.localScale = Vector3.one;
+            else visualPart.localScale = new Vector3(-1, 1, 1);
+        }
+    }
+
+    float CalculateSpeed()
+    {
+        if (moveInput == 0) return 0;
+        bool movingForward = (rival.position.x > transform.position.x && moveInput > 0) || (rival.position.x < transform.position.x && moveInput < 0);
+        return movingForward ? walkSpeed : backwardSpeed;
+    }
+
     void UpdateAnimations()
     {
         if (anim == null) return;
+
         anim.SetBool("isGrounded", isGrounded);
         anim.SetBool("isCrouching", isCrouching);
         anim.SetBool("isBlocking", isBlocking);
-        // ... (resto de parámetros que ya configuramos)
+
+        if (!isDiagonalJump)
+        {
+            anim.SetInteger("JumpPhase", currentJumpPhase);
+            anim.SetBool("isDiagonalJump", false);
+        }
+        else
+        {
+            anim.SetInteger("JumpPhase", 0);
+            anim.SetBool("isDiagonalJump", true);
+            anim.SetInteger("FlipDirection", flipDirection);
+        }
+
+        if (isGrounded && !isCrouching && !isAttacking && !isBlocking)
+        {
+            bool movingForward = (rival.position.x > transform.position.x && moveInput > 0) || (rival.position.x < transform.position.x && moveInput < 0);
+            anim.SetFloat("MoveInput", moveInput == 0 ? 0 : (movingForward ? 1 : -1));
+        }
+        else
+        {
+            anim.SetFloat("MoveInput", 0);
+        }
     }
 }
