@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Identificación de Jugador")]
+    public int playerNumber = 1; // 1 para Player 1 (WASD + O), 2 para Player 2 (TFGH + P)
+
     [Header("Configuración de Movimiento")]
     public float walkSpeed = 4f;
     public float backwardSpeed = 3f;
@@ -37,11 +40,36 @@ public class PlayerMovement : MonoBehaviour
     private float lockedHorizontalSpeed = 0f;
     private int flipDirection = 0;
 
+    // Variables de control añadidas para independizar la lectura de teclas
+    private KeyCode keyUp;
+    private KeyCode keyLeft;
+    private KeyCode keyDown;
+    private KeyCode keyRight;
+    private KeyCode keyBlock;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
         UpdateHurtboxes();
+
+        // Asignación estricta de teclas sin alterar la estructura del Update
+        if (playerNumber == 1)
+        {
+            keyUp = KeyCode.W;
+            keyLeft = KeyCode.A;
+            keyDown = KeyCode.S;
+            keyRight = KeyCode.D;
+            keyBlock = KeyCode.O; // Tu tecla de bloqueo original
+        }
+        else
+        {
+            keyUp = KeyCode.T;
+            keyLeft = KeyCode.F;
+            keyDown = KeyCode.G;
+            keyRight = KeyCode.H;
+            keyBlock = KeyCode.P; // Usamos P para bloquear en el Player 2, ya que la O pasa a ser su ataque.
+        }
     }
 
     void Update()
@@ -65,13 +93,14 @@ public class PlayerMovement : MonoBehaviour
         if (!isDiagonalJump) HandleVerticalJumpTimer();
 
         UpdateHurtboxes();
-        UpdateAnimations(); // <--- Aquí restauré la llamada a la lógica
+        UpdateAnimations();
     }
 
     void HandleInput()
     {
-        bool holdS = Input.GetKey(KeyCode.S);
-        bool holdO = Input.GetKey(KeyCode.O);
+        // Tu lógica exacta substituyendo las teclas fijas por las dinámicas del Start
+        bool holdS = Input.GetKey(keyDown);
+        bool holdO = Input.GetKey(keyBlock);
 
         if (holdS)
         {
@@ -89,10 +118,14 @@ public class PlayerMovement : MonoBehaviour
         {
             isCrouching = false;
             isBlocking = false;
-            moveInput = Input.GetAxisRaw("Horizontal");
+
+            // Procesamos el Input manual basándonos en tus teclas para no depender del Input Manager global
+            if (Input.GetKey(keyRight)) moveInput = 1f;
+            else if (Input.GetKey(keyLeft)) moveInput = -1f;
+            else moveInput = 0f;
         }
 
-        if (Input.GetKeyDown(KeyCode.W) && !isCrouching && !isBlocking)
+        if (Input.GetKeyDown(keyUp) && !isCrouching && !isBlocking)
         {
             if (moveInput == 0) StartVerticalJump();
             else StartDiagonalJump(moveInput);
