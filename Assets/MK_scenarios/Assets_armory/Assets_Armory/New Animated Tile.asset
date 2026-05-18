@@ -13,19 +13,11 @@ MonoBehaviour:
   m_Name: New Animated Tile
   m_EditorClassIdentifier: Unity.2D.Tilemap.Extras::UnityEngine.Tilemaps.AnimatedTile
   m_AnimatedSprites:
-  - {fileID: 3395483445841918429, guid: fa0ae4dd900ee3743b6c66131d1ccd18, type: 3}
-  - {fileID: 2121265857922890257, guid: fad89004e5744564e88853c94c59221a, type: 3}
-  - {fileID: 7901055896579061874, guid: 7652eddec57efff41acbc208e22c136b, type: 3}
   - {fileID: -7261673164651193754, guid: 3ed5f07edafdc2849a1f03ef9d8337cc, type: 3}
   - {fileID: 1756388462076146355, guid: b477e76c3918e21468a74361475936bd, type: 3}
   - {fileID: -8198669293956924161, guid: 1bfaa5c69b9a874408dc9d01746ed041, type: 3}
-  - {fileID: 6744354172021570260, guid: 2f6c152ebb40a3841afa35f46bd82cc6, type: 3}
-  - {fileID: -8210244607076692351, guid: 4c9c66a5570b201468d1c52b548287c9, type: 3}
-  - {fileID: 6406791406306836336, guid: 654e9601be63c974f9b8a76082475828, type: 3}
-  - {fileID: -8995401695380704169, guid: c2115bf4e5fd1034dbd4fed8087e2a80, type: 3}
-  - {fileID: -1459504965130607312, guid: 1b8face14df87e74eaf8ac0da63c3281, type: 3}
   m_MinSpeed: 0.5
-  m_MaxSpeed: 1
+  m_MaxSpeed: 0.5
   m_AnimationStartTime: 0
   m_AnimationStartFrame: 0
   m_TileColliderType: 0
