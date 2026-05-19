@@ -541,7 +541,7 @@ MonoBehaviour:
   flechaTransform: {fileID: 1893524856}
   flechaImage: {fileID: 1893524854}
   espaciadoY: 23
-  escenaStart: SampleScene
+  escenaStart: Seleccion_Personaje
   escenaCredits: 
   velocidadParpadeo: 0.35
 --- !u!4 &1024438491
