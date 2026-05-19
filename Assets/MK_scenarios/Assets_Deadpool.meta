@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 938ce2f299468914c805485a70e84874
+=======
+guid: 66a28d95a76f66142a664d00b4602c65
+>>>>>>> asset-escenario-nat
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

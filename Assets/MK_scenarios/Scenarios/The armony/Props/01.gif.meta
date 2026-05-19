@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 209cb66eb22c36842b3234298292924c
+=======
+guid: ce689204dbef5c345bc116e0a79189b1
+>>>>>>> asset-escenario-nat
 TextureImporter:
   internalIDToNameTable:
   - first:
