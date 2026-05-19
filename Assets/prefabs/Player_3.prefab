@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 341461606042228524}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.509, y: 1.208, z: 0}
-  m_LocalScale: {x: 0.28050914, y: 0.28050914, z: 0.28050914}
+  m_LocalPosition: {x: 0.54, y: 1.15, z: 0}
+  m_LocalScale: {x: 0.3422212, y: 0.28050914, z: 0.28050914}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4694575810301364077}
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc31ed2d34b69354a9debaeae4556aea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hitbox
-  damage: 10
+  damage: 5
   typeOfAttack: 0
 --- !u!61 &7849249162506758191
 BoxCollider2D:
@@ -120,8 +120,8 @@ Transform:
   m_GameObject: {fileID: 3705947104592940061}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.728, z: 0}
-  m_LocalScale: {x: 0.52, y: 1.1872027, z: 1}
+  m_LocalPosition: {x: 0, y: 0.47, z: 0}
+  m_LocalScale: {x: 0.6864, y: 0.808872, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6474646068517212225}
@@ -212,8 +212,8 @@ Transform:
   m_GameObject: {fileID: 4820913236935102934}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.499, y: 1.443, z: 0}
-  m_LocalScale: {x: 0.241053, y: 0.4247608, z: 1.2687}
+  m_LocalPosition: {x: 0.7, y: 1.37, z: 0}
+  m_LocalScale: {x: 0.2940847, y: 0.7263409, z: 1.2687}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4694575810301364077}
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc31ed2d34b69354a9debaeae4556aea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hitbox
-  damage: 20
+  damage: 15
   typeOfAttack: 2
 --- !u!61 &3915672060839416160
 BoxCollider2D:
@@ -306,7 +306,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.105, z: 0}
-  m_LocalScale: {x: 1, y: 0.93, z: 1}
+  m_LocalScale: {x: 1.32, y: 0.93, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6474646068517212225}
@@ -494,10 +494,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   playerNumber: 3
-  walkSpeed: 2
-  backwardSpeed: 2
-  jumpForce: 14.5
-  diagonalJumpSpeed: 2.3
+  walkSpeed: 1.8
+  backwardSpeed: 1.3
+  jumpForce: 16
+  diagonalJumpSpeed: 3.6
   timeInFrame1: 0.09
   timeInFrame2: 0.1
   hurtboxNormal: {fileID: 5294046996310368763}
@@ -531,12 +531,16 @@ MonoBehaviour:
   kickWalkingDuration: 0.6
   lowPunchDuration: 0.4
   upperCutDuration: 0.8
-  specialDuration: 1.2
+  spearTransform: {fileID: 0}
+  spearGrowthSpeed: 25
+  maxSpearScale: 15
+  pullSpeed: 15
+  pullStopDistance: 1.5
   specialCooldownDuration: 6
   sequenceWindow: 0.4
   hitboxPunch: {fileID: 341461606042228524}
   hitboxKick: {fileID: 7735372898738566858}
-  hitboxLowPunch: {fileID: 0}
+  hitboxLowPunch: {fileID: 7664565620114833231}
   hitboxUpperCut: {fileID: 4820913236935102934}
 --- !u!114 &4253673618904026150
 MonoBehaviour:
@@ -553,7 +557,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   stunDuration: 0.4
-  knockbackForce: 7
+  knockbackForce: 20
 --- !u!1 &7393673389216652981
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,7 +586,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.0000000074506, y: 0.58, z: 0}
-  m_LocalScale: {x: 0.49, y: 1, z: 1}
+  m_LocalScale: {x: 0.6468, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6474646068517212225}
@@ -681,6 +685,7 @@ Transform:
   - {fileID: 1545855564842409722}
   - {fileID: 8617922736589173725}
   - {fileID: 955017968362092210}
+  - {fileID: 6531217562770761966}
   m_Father: {fileID: 1349300686922252981}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1846613736782392638
@@ -776,6 +781,99 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b10da5125badf344a6678dd6bb1f7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimationBridge
+--- !u!1 &7664565620114833231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6531217562770761966}
+  - component: {fileID: 7022438767006194300}
+  - component: {fileID: 7128433608944821554}
+  m_Layer: 0
+  m_Name: Hitbox_LowPunch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &6531217562770761966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7664565620114833231}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.69, y: 0.791, z: 0}
+  m_LocalScale: {x: 0.5082256, y: 0.23420854, z: 0.23420854}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4694575810301364077}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &7022438767006194300
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7664565620114833231}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &7128433608944821554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7664565620114833231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc31ed2d34b69354a9debaeae4556aea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hitbox
+  damage: 6
+  typeOfAttack: 1
 --- !u!1 &7735372898738566858
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,8 +901,8 @@ Transform:
   m_GameObject: {fileID: 7735372898738566858}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.785, y: 1.129, z: 0}
-  m_LocalScale: {x: 0.28582, y: 0.5823297, z: 0.28582}
+  m_LocalPosition: {x: 0.6, y: 1.129, z: 0}
+  m_LocalScale: {x: 0.4124382, y: 0.5823297, z: 0.28582}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4694575810301364077}
@@ -821,7 +919,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc31ed2d34b69354a9debaeae4556aea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hitbox
-  damage: 15
+  damage: 10
   typeOfAttack: 0
 --- !u!61 &4447480546421974415
 BoxCollider2D:
