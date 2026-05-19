@@ -6,16 +6,13 @@ public class AnimationBridge : MonoBehaviour
 
     void Start()
     {
-        // Buscamos el componente PlayerCombat en los objetos padres (la raíz del personaje)
         playerCombat = GetComponentInParent<PlayerCombat>();
 
         if (playerCombat == null)
         {
-            Debug.LogError($"[AnimationBridge] No se encontró el script PlayerCombat en los padres de {gameObject.name}. Asegúrate de que este objeto sea hijo de la raíz del jugador.");
+            Debug.LogError($"[AnimationBridge] No se encontró el script PlayerCombat en los padres de {gameObject.name}.");
         }
     }
-
-    // --- ESTAS FUNCIONES APARECERÁN DE INMEDIATO EN TU DESPLEGABLE DE ANIMACIÓN ---
 
     public void ActivarHitboxPunch()
     {
@@ -35,6 +32,17 @@ public class AnimationBridge : MonoBehaviour
     public void DesactivarHitboxKick()
     {
         if (playerCombat != null) playerCombat.DesactivarHitboxKick();
+    }
+
+    // --- NUEVAS FUNCIONES PARA EL GOLPE AGACHADO ---
+    public void ActivarHitboxLowPunch()
+    {
+        if (playerCombat != null) playerCombat.ActivarHitboxLowPunch();
+    }
+
+    public void DesactivarHitboxLowPunch()
+    {
+        if (playerCombat != null) playerCombat.DesactivarHitboxLowPunch();
     }
 
     public void ActivarHitboxUpperCut()

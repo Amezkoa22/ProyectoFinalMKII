@@ -25,9 +25,10 @@ public class PlayerCombat : MonoBehaviour
     public float sequenceWindow = 0.4f;
 
     [Header("Referencias de Hitboxes de Ataque (Objetos Hijos)")]
-    public GameObject hitboxPunch;
-    public GameObject hitboxKick;
-    public GameObject hitboxUpperCut;
+    public GameObject hitboxPunch;      // Puño de pie normal
+    public GameObject hitboxKick;       // Patada normal
+    public GameObject hitboxLowPunch;  // ¡NUEVA! Hitbox para el golpe bajo agachado
+    public GameObject hitboxUpperCut;  // Gancho agachado fuerte
 
     private Animator anim;
     private PlayerMovement movement;
@@ -314,13 +315,17 @@ public class PlayerCombat : MonoBehaviour
     }
 
     // ========================================================================
-    // --- FUNCIONES RESTAURADAS PARA EVENTOS DE ANIMACIÓN / ANIMATION BRIDGE ---
+    // --- EVENTOS DE ANIMACIÓN ACTUALIZADOS CON LA NUEVA HITBOX LOW PUNCH ---
     // ========================================================================
     public void ActivarHitboxPunch() { if (hitboxPunch != null) hitboxPunch.SetActive(true); }
     public void DesactivarHitboxPunch() { if (hitboxPunch != null) hitboxPunch.SetActive(false); }
 
     public void ActivarHitboxKick() { if (hitboxKick != null) hitboxKick.SetActive(true); }
     public void DesactivarHitboxKick() { if (hitboxKick != null) hitboxKick.SetActive(false); }
+
+    // Estas dos ahora controlan exclusivamente el nuevo objeto agachado
+    public void ActivarHitboxLowPunch() { if (hitboxLowPunch != null) hitboxLowPunch.SetActive(true); }
+    public void DesactivarHitboxLowPunch() { if (hitboxLowPunch != null) hitboxLowPunch.SetActive(false); }
 
     public void ActivarHitboxUpperCut() { if (hitboxUpperCut != null) hitboxUpperCut.SetActive(true); }
     public void DesactivarHitboxUpperCut() { if (hitboxUpperCut != null) hitboxUpperCut.SetActive(false); }
