@@ -172,7 +172,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: b8f70a018c053be4eb83b909f371c4f2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -709,6 +709,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
   playerNumber: 1
+  esScorpion: 1
+  esSubZero: 0
+  esKitana: 0
   comboLimit: 1
   cooldownDuration: 0.3
   kickCooldownDuration: 0.3
@@ -716,17 +719,22 @@ MonoBehaviour:
   kickWalkingDuration: 0.6
   lowPunchDuration: 0.4
   upperCutDuration: 0.8
+  specialCooldownDuration: 3
+  sequenceWindow: 0.4
   spearTransform: {fileID: 7264688534917923508}
   spearGrowthSpeed: 2
   maxSpearScale: 5
   pullSpeed: 2
   pullStopDistance: 1.35
-  specialCooldownDuration: 3
-  sequenceWindow: 0.4
+  iceBallPrefab: {fileID: 0}
+  spawnPointProyectil: {fileID: 0}
+  iceBallSpeed: 12
+  iceFreezeDuration: 3
   hitboxPunch: {fileID: 341461606042228524}
   hitboxKick: {fileID: 7735372898738566858}
   hitboxLowPunch: {fileID: 2178866305893748840}
   hitboxUpperCut: {fileID: 4820913236935102934}
+  isFrozen: 0
 --- !u!114 &4253673618904026150
 MonoBehaviour:
   m_ObjectHideFlags: 0

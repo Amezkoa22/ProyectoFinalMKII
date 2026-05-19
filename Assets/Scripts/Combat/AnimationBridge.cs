@@ -70,4 +70,28 @@ public class AnimationBridge : MonoBehaviour
             playerCombat.DispararSpear();
         }
     }
+
+    // Agrega esto dentro de tu script AnimationBridge.cs
+    public void DispararHieloSubZero()
+    {
+        // Busca el componente PlayerCombat que está en el mismo objeto o en el padre
+        PlayerCombat combat = GetComponentInParent<PlayerCombat>();
+        if (combat == null) combat = GetComponent<PlayerCombat>();
+
+        if (combat != null)
+        {
+            combat.LanzarIceBall();
+        }
+    }
+
+    public void FinAnimacionIceBall()
+    {
+        PlayerCombat combat = GetComponentInParent<PlayerCombat>();
+        if (combat == null) combat = GetComponent<PlayerCombat>();
+
+        if (combat != null)
+        {
+            combat.TerminarHabilidadIceBall();
+        }
+    }
 }

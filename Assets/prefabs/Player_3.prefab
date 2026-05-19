@@ -386,7 +386,7 @@ GameObject:
   - component: {fileID: 4253673618904026150}
   m_Layer: 0
   m_Name: Player_3
-  m_TagString: Player3
+  m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -493,7 +493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3f4b0cafb7de94299f9caa8c4bec42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  playerNumber: 3
+  playerNumber: 2
   walkSpeed: 1.8
   backwardSpeed: 1.3
   jumpForce: 16
@@ -523,7 +523,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 918f1d07ec3bb674287e6ce0c9d25e73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
-  playerNumber: 3
+  playerNumber: 2
+  esScorpion: 0
+  esSubZero: 0
+  esKitana: 1
   comboLimit: 1
   cooldownDuration: 0.3
   kickCooldownDuration: 0.3
@@ -531,13 +534,17 @@ MonoBehaviour:
   kickWalkingDuration: 0.6
   lowPunchDuration: 0.4
   upperCutDuration: 0.8
+  specialCooldownDuration: 6
+  sequenceWindow: 0.4
   spearTransform: {fileID: 0}
   spearGrowthSpeed: 25
   maxSpearScale: 15
   pullSpeed: 15
   pullStopDistance: 1.5
-  specialCooldownDuration: 6
-  sequenceWindow: 0.4
+  iceBallPrefab: {fileID: 0}
+  spawnPointProyectil: {fileID: 0}
+  iceBallSpeed: 12
+  iceFreezeDuration: 3
   hitboxPunch: {fileID: 341461606042228524}
   hitboxKick: {fileID: 7735372898738566858}
   hitboxLowPunch: {fileID: 7664565620114833231}

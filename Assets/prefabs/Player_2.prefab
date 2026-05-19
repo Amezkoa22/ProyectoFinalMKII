@@ -93,6 +93,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.16, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &348541026491180344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5742258003107453249}
+  m_Layer: 0
+  m_Name: SpawnPointProyectil
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5742258003107453249
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 348541026491180344}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.374, y: 0.876, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1349300686922252981}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3705947104592940061
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,6 +530,7 @@ Transform:
   m_Children:
   - {fileID: 4694575810301364077}
   - {fileID: 6474646068517212225}
+  - {fileID: 5742258003107453249}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3920872711919566838
@@ -617,6 +649,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
   playerNumber: 2
+  esScorpion: 0
+  esSubZero: 1
+  esKitana: 0
   comboLimit: 1
   cooldownDuration: 0.3
   kickCooldownDuration: 0.3
@@ -624,17 +659,22 @@ MonoBehaviour:
   kickWalkingDuration: 0.6
   lowPunchDuration: 0.4
   upperCutDuration: 0.8
+  specialCooldownDuration: 3
+  sequenceWindow: 0.4
   spearTransform: {fileID: 0}
   spearGrowthSpeed: 25
   maxSpearScale: 15
   pullSpeed: 15
   pullStopDistance: 1.5
-  specialCooldownDuration: 6
-  sequenceWindow: 0.4
+  iceBallPrefab: {fileID: 6093020584100333201, guid: 352b3afdc8889d349b5720749ff070e7, type: 3}
+  spawnPointProyectil: {fileID: 5742258003107453249}
+  iceBallSpeed: 12
+  iceFreezeDuration: 3
   hitboxPunch: {fileID: 341461606042228524}
   hitboxKick: {fileID: 7735372898738566858}
   hitboxLowPunch: {fileID: 4382749277657088619}
   hitboxUpperCut: {fileID: 4820913236935102934}
+  isFrozen: 0
 --- !u!114 &4253673618904026150
 MonoBehaviour:
   m_ObjectHideFlags: 0

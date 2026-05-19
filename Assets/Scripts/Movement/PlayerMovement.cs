@@ -47,20 +47,24 @@ public class PlayerMovement : MonoBehaviour
     private KeyCode keyRight;
     private KeyCode keyBlock;
 
+    private PlayerCombat combatScript; // Referencia para saber si está congelado
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
+        combatScript = GetComponent<PlayerCombat>();
+
         UpdateHurtboxes();
 
-        // Asignación estricta de teclas sin alterar la estructura del Update
+        // Asignación estricta de teclas WASD+O (P1) o TFGH+P (P2)
         if (playerNumber == 1)
         {
             keyUp = KeyCode.W;
             keyLeft = KeyCode.A;
             keyDown = KeyCode.S;
             keyRight = KeyCode.D;
-            keyBlock = KeyCode.O; // Tu tecla de bloqueo original
+            keyBlock = KeyCode.O; // Tecla de bloqueo original P1
         }
         else
         {
@@ -68,12 +72,15 @@ public class PlayerMovement : MonoBehaviour
             keyLeft = KeyCode.F;
             keyDown = KeyCode.G;
             keyRight = KeyCode.H;
-            keyBlock = KeyCode.P; // Usamos P para bloquear en el Player 2, ya que la O pasa a ser su ataque.
+            keyBlock = KeyCode.P; // Tecla de bloqueo original P2
         }
     }
 
     void Update()
     {
+        // Bloqueo total si el personaje está congelado
+        if (combatScript != null && combatScript.isFrozen) return;
+
         Vector2 detectionCenter = new Vector2(transform.position.x, transform.position.y + 0.1f);
         isGrounded = Physics2D.OverlapCircle(detectionCenter, 0.2f, groundLayer);
 
@@ -89,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
             isCrouching = false;
         }
 
-        LookAtRival();
+        LookAtRival(); // Corregido: Siempre se ejecuta, incluso si no hay input
         if (!isDiagonalJump) HandleVerticalJumpTimer();
 
         UpdateHurtboxes();
@@ -98,17 +105,17 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleInput()
     {
-        // Tu lógica exacta substituyendo las teclas fijas por las dinámicas del Start
+        // Tu lógica exacta substituyendo las teclas WASD por las dinámicas
         bool holdS = Input.GetKey(keyDown);
-        bool holdO = Input.GetKey(keyBlock);
+        bool holdBlock = Input.GetKey(keyBlock);
 
         if (holdS)
         {
             isCrouching = true;
-            isBlocking = holdO;
+            isBlocking = holdBlock;
             moveInput = 0;
         }
-        else if (holdO)
+        else if (holdBlock)
         {
             isBlocking = true;
             isCrouching = false;
@@ -119,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
             isCrouching = false;
             isBlocking = false;
 
-            // Procesamos el Input manual basándonos en tus teclas para no depender del Input Manager global
+            // Procesamos el Input manual WASD
             if (Input.GetKey(keyRight)) moveInput = 1f;
             else if (Input.GetKey(keyLeft)) moveInput = -1f;
             else moveInput = 0f;
@@ -156,6 +163,13 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Si está congelado, mantenemos su velocidad en X en 0 para que no se deslice
+        if (combatScript != null && combatScript.isFrozen)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
         if (isGrounded && !isCrouching && !isAttacking && !isBlocking)
         {
             float currentSpeed = CalculateSpeed();
@@ -203,10 +217,16 @@ public class PlayerMovement : MonoBehaviour
 
     void LookAtRival()
     {
-        if (rival != null && isGrounded && !isAttacking && !isBlocking)
+        if (rival != null && isGrounded && !isBlocking)
         {
-            if (rival.position.x > transform.position.x) visualPart.localScale = Vector3.one;
-            else visualPart.localScale = new Vector3(-1, 1, 1);
+            // Corregido: Solo se ignora si ESTA VISUALMENTE CONGELADO o atacando
+            bool ignorarFlipping = isAttacking || (combatScript != null && combatScript.estaCongeladoVisualmente);
+
+            if (!ignorarFlipping)
+            {
+                if (rival.position.x > transform.position.x) visualPart.localScale = Vector3.one;
+                else visualPart.localScale = new Vector3(-1, 1, 1);
+            }
         }
     }
 

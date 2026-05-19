@@ -9,8 +9,6 @@ AnimatorOverrideController:
   m_Name: Kitana_OverrideController
   m_Controller: {fileID: 9100000, guid: 210c2d42042e0bc40a9ff80b20024777, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: 90c38bf73c48a8e4d95481adb0e310db, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: d9739343be9e7c941baf61e8cb793146, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: a47c6363a3d422942bcb09e1b6390840, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: 32752f6e36efc184ea7b4fa72d5a59c1, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: e090f50e95552e2449c0f5417f699ece, type: 2}
@@ -67,3 +65,5 @@ AnimatorOverrideController:
     m_OverrideClip: {fileID: 7400000, guid: 1765402d89316614da7a41eda563168b, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: ad27420ce50ba7e4ca7abff35a11f9a0, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: 7d8e8f586a4e63b4892462c87a02b42a, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 3bd57cbdf90502b4fb6f13bb4ecacd84, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 8ca6e91b8fbb9af4aafe14319ce91c14, type: 2}
