@@ -536,6 +536,7 @@ MonoBehaviour:
   sequenceWindow: 0.4
   hitboxPunch: {fileID: 341461606042228524}
   hitboxKick: {fileID: 7735372898738566858}
+  hitboxLowPunch: {fileID: 0}
   hitboxUpperCut: {fileID: 4820913236935102934}
 --- !u!114 &4253673618904026150
 MonoBehaviour:
@@ -551,6 +552,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHealth: 100
   currentHealth: 0
+  stunDuration: 0.4
+  knockbackForce: 7
 --- !u!1 &7393673389216652981
 GameObject:
   m_ObjectHideFlags: 0

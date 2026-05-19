@@ -6,62 +6,109 @@ public class PlayerStats : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
-    // Referencias lógicas a tus scripts existentes en el mismo objeto
+    [Header("Configuración de Impacto")]
+    public float stunDuration = 0.35f;
+    public float knockbackForce = 5f;  // Modifica esto en el inspector para la distancia de vuelo
+
     private PlayerMovement movement;
+    private PlayerCombat combat;
     private Animator anim;
+    private Rigidbody2D rb;
+
+    private bool isStunned = false;
+    private float stunTimer = 0f;
+    private float currentKnockbackSpeed = 0f;
 
     void Start()
     {
         currentHealth = maxHealth;
 
-        // Obtenemos los componentes directamente de la raíz del personaje
         movement = GetComponent<PlayerMovement>();
+        combat = GetComponent<PlayerCombat>();
         anim = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody2D>();
 
         if (movement == null) Debug.LogError($"[PlayerStats] No se encontró PlayerMovement en {gameObject.name}");
         if (anim == null) Debug.LogError($"[PlayerStats] No se encontró el Animator en los hijos de {gameObject.name}");
+        if (rb == null) Debug.LogError($"[PlayerStats] No se encontró Rigidbody2D en {gameObject.name}");
     }
 
-    // Este método será invocado públicamente desde el script Hurtbox cuando detecte un golpe
+    void Update()
+    {
+        if (isStunned)
+        {
+            movement.isAttacking = true;
+            stunTimer -= Time.deltaTime;
+
+            // --- CORRECCIÓN EXCLUSIVA PARA EL VUELO ---
+            // Modificamos 'rb.position' directamente en lugar de la velocidad.
+            // Esto le gana al script de movimiento si este intenta frenar al jugador.
+            if (rb != null && currentKnockbackSpeed != 0f)
+            {
+                rb.position = new Vector2(rb.position.x + currentKnockbackSpeed * Time.deltaTime, rb.position.y);
+            }
+
+            // Desaceleración progresiva para que el deslizamiento sea fluido y decreciente
+            currentKnockbackSpeed = Mathf.MoveTowards(currentKnockbackSpeed, 0f, Time.deltaTime * knockbackForce * 3f);
+
+            if (stunTimer <= 0f)
+            {
+                isStunned = false;
+                movement.isAttacking = false;
+                currentKnockbackSpeed = 0f;
+
+                if (anim != null)
+                {
+                    anim.Play("Scorpion_Idle", 0, 0f);
+                }
+            }
+        }
+    }
+
     public void RecibirGolpe(int daño, AttackType tipoDeAtaque, Hurtbox.HurtboxType hurtboxImpactada)
     {
-        // 1. REVISAR SI EL JUGADOR ESTÁ BLOQUEANDO
-        if (movement.isBlocking)
-        {
-            // Si está bloqueando, no aplicamos daño ni reproducimos animaciones de Hit.
-            // El flujo se interrumpe aquí para mantener al jugador en sus estados de bloqueo actuales.
-            return;
-        }
+        if (movement.isBlocking) return;
 
-        // 2. APLICAR DAÑO (Si no está bloqueando)
         currentHealth -= daño;
         if (currentHealth < 0) currentHealth = 0;
 
-        // 3. FILTRADO ESTRICTO DE ANIMACIONES DE IMPACTO (Tus reglas exactas)
+        if (combat != null) combat.CancelarAtaques();
 
-        // REGLA A: Si se impacta la Hurtbox de Salto (Jump), SIEMPRE va a Hit_UpperCut
+        isStunned = true;
+        stunTimer = stunDuration;
+        movement.isAttacking = true;
+
         if (hurtboxImpactada == Hurtbox.HurtboxType.Jump)
         {
             anim.Play("Hit_UpperCut", 0, 0f);
+            AplicarKnockback();
         }
-        // REGLA B: Si se impacta la Hurtbox Agachado (Crouch), SIEMPRE va a Hit_Duck
         else if (hurtboxImpactada == Hurtbox.HurtboxType.Crouch)
         {
             anim.Play("Hit_Duck", 0, 0f);
+            currentKnockbackSpeed = 0f;
         }
-        // REGLA C: Si se impacta la Hurtbox de Pie (Normal)
         else if (hurtboxImpactada == Hurtbox.HurtboxType.Normal)
         {
-            // Sub-regla: Si el golpe recibido fue un UpperCut pesado, va a Hit_UpperCut
             if (tipoDeAtaque == AttackType.Heavy)
             {
                 anim.Play("Hit_UpperCut", 0, 0f);
+                AplicarKnockback();
             }
-            // Para cualquier otro golpe estándar de pie, va a Hit_Stand
             else
             {
                 anim.Play("Hit_Stand", 0, 0f);
+                currentKnockbackSpeed = 0f;
             }
+        }
+    }
+
+    private void AplicarKnockback()
+    {
+        if (movement.rival != null && rb != null)
+        {
+            float direccion = transform.position.x > movement.rival.position.x ? 1f : -1f;
+            currentKnockbackSpeed = direccion * knockbackForce;
         }
     }
 }

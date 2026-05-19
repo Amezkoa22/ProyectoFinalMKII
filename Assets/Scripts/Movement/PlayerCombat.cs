@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class PlayerCombat : MonoBehaviour
 {
     [Header("Identificación de Jugador")]
-    public int playerNumber = 1; // 1 para Player 1, 2 para Player 2
+    public int playerNumber = 1;
 
     [Header("Configuración del Puño de Pie")]
     public float comboLimit = 0.5f;
@@ -25,41 +25,35 @@ public class PlayerCombat : MonoBehaviour
     public float sequenceWindow = 0.4f;
 
     [Header("Referencias de Hitboxes de Ataque (Objetos Hijos)")]
-    public GameObject hitboxPunch;      // Puño de pie normal
-    public GameObject hitboxKick;       // Patada normal
-    public GameObject hitboxLowPunch;  // ¡NUEVA! Hitbox para el golpe bajo agachado
-    public GameObject hitboxUpperCut;  // Gancho agachado fuerte
+    public GameObject hitboxPunch;
+    public GameObject hitboxKick;
+    public GameObject hitboxLowPunch;
+    public GameObject hitboxUpperCut;
 
     private Animator anim;
     private PlayerMovement movement;
 
-    // Variables para el Puño de Pie
     private int comboStep = 0;
     private bool isOnCooldown = false;
     private float cooldownTimer = 0f;
     private float comboResetTimer = 0f;
 
-    // Variables para la Patada
     private bool isKicking = false;
     private bool isKickOnCooldown = false;
     private float kickCooldownTimer = 0f;
     private float kickActiveTimer = 0f;
 
-    // Variables para el Golpe Agachado (LowPunch)
     private bool isLowPunching = false;
     private float lowPunchTimer = 0f;
 
-    // Variables para el Gancho Agachado (UpperCut)
     private bool isUpperCutting = false;
     private float upperCutTimer = 0f;
 
-    // Variables para el Ataque Especial
     private bool isDoingSpecial = false;
     private bool isSpecialOnCooldown = false;
     private float specialCooldownTimer = 0f;
     private float specialActiveTimer = 0f;
 
-    // Teclas dinámicas mapeadas en Start
     private KeyCode keyPunch;
     private KeyCode keyUpperCut;
     private KeyCode keyKick;
@@ -80,7 +74,9 @@ public class PlayerCombat : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         movement = GetComponent<PlayerMovement>();
 
-        // Mapeo exacto de controles de combate solicitado
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null) rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
+
         if (playerNumber == 1)
         {
             keyPunch = KeyCode.J;
@@ -92,12 +88,12 @@ public class PlayerCombat : MonoBehaviour
         }
         else
         {
-            keyPunch = KeyCode.K;        // K en lugar de J
-            keyUpperCut = KeyCode.O;     // O en lugar de I
-            keyKick = KeyCode.Semicolon; // Ñ física (Semicolon en Unity) en lugar de L
-            keyCrouchModifier = KeyCode.G; // G en lugar de S (Set TFGH)
-            keyLeft = KeyCode.F;         // F en lugar de A
-            keyRight = KeyCode.H;        // H en lugar de D
+            keyPunch = KeyCode.K;
+            keyUpperCut = KeyCode.O;
+            keyKick = KeyCode.Semicolon;
+            keyCrouchModifier = KeyCode.G;
+            keyLeft = KeyCode.F;
+            keyRight = KeyCode.H;
         }
     }
 
@@ -105,29 +101,16 @@ public class PlayerCombat : MonoBehaviour
     {
         HandleCooldowns();
 
-        // 1. SI SE ESTÁ EJECUTANDO EL ATAQUE ESPECIAL (Prioridad Máxima)
-        if (isDoingSpecial)
-        {
-            HandleSpecialTimer();
-            return;
-        }
-
-        // 2. SI SE ESTÁ EJECUTANDO ALGO AGACHADO (Prioridad de estados activos)
+        if (isDoingSpecial) { HandleSpecialTimer(); return; }
         if (isLowPunching) { HandleLowPunchTimer(); return; }
         if (isUpperCutting) { HandleUpperCutTimer(); return; }
 
-        // --- SISTEMA DE DETECCIÓN DE SECUENCIA (Solo de pie, sin atacar y en el suelo) ---
         if (movement.isGrounded && !Input.GetKey(keyCrouchModifier) && !isSpecialOnCooldown && !movement.isAttacking)
         {
             RecordSpecialInputs();
-            if (CheckSpecialSequence())
-            {
-                ExecuteGetOverHere();
-                return;
-            }
+            if (CheckSpecialSequence()) { ExecuteGetOverHere(); return; }
         }
 
-        // 3. CONTROL TOTAL DE AGACHADO (LIBERADO)
         if (movement.isGrounded && Input.GetKey(keyCrouchModifier) && !isKicking && !movement.isAttacking)
         {
             if (!movement.isBlocking)
@@ -138,22 +121,12 @@ public class PlayerCombat : MonoBehaviour
             return;
         }
 
-        // 4. SI ESTÁ DE PIE NORMAL
         if (movement.isGrounded)
         {
             if (!isKicking)
             {
-                // LÓGICA DEL PUÑO DE PIE
-                if (Input.GetKeyDown(keyPunch) && !isOnCooldown && !movement.isBlocking)
-                {
-                    ExecuteMidPunch();
-                }
-
-                // LÓGICA DE LAS PATADAS
-                if (Input.GetKeyDown(keyKick) && !isKickOnCooldown && !movement.isBlocking && !movement.isAttacking)
-                {
-                    DecideAndExecuteKick();
-                }
+                if (Input.GetKeyDown(keyPunch) && !isOnCooldown && !movement.isBlocking) ExecuteMidPunch();
+                if (Input.GetKeyDown(keyKick) && !isKickOnCooldown && !movement.isBlocking && !movement.isAttacking) DecideAndExecuteKick();
             }
             else
             {
@@ -172,60 +145,33 @@ public class PlayerCombat : MonoBehaviour
         if (Input.GetKeyDown(keyLeft)) inputHistory.Add(new InputCommand(keyLeft, Time.time));
         if (Input.GetKeyDown(keyRight)) inputHistory.Add(new InputCommand(keyRight, Time.time));
         if (Input.GetKeyDown(keyPunch)) inputHistory.Add(new InputCommand(keyPunch, Time.time));
-
         inputHistory.RemoveAll(cmd => Time.time - cmd.time > sequenceWindow);
     }
 
     bool CheckSpecialSequence()
     {
         if (inputHistory.Count < 3 || movement.rival == null) return false;
-
         int count = inputHistory.Count;
         KeyCode uno = inputHistory[count - 3].key;
         KeyCode dos = inputHistory[count - 2].key;
         KeyCode tres = inputHistory[count - 1].key;
-
         bool enemyToRight = movement.rival.position.x > transform.position.x;
 
-        if (enemyToRight)
-        {
-            if (uno == keyLeft && dos == keyRight && tres == keyPunch)
-            {
-                inputHistory.Clear();
-                return true;
-            }
-        }
-        else
-        {
-            if (uno == keyRight && dos == keyLeft && tres == keyPunch)
-            {
-                inputHistory.Clear();
-                return true;
-            }
-        }
-
+        if (enemyToRight) { if (uno == keyLeft && dos == keyRight && tres == keyPunch) { inputHistory.Clear(); return true; } }
+        else { if (uno == keyRight && dos == keyLeft && tres == keyPunch) { inputHistory.Clear(); return true; } }
         return false;
     }
 
     void ExecuteGetOverHere()
     {
-        isDoingSpecial = true;
-        movement.isAttacking = true;
-        anim.Play("GetOverHere", 0, 0f);
-        specialActiveTimer = specialDuration;
+        isDoingSpecial = true; movement.isAttacking = true;
+        anim.Play("GetOverHere", 0, 0f); specialActiveTimer = specialDuration;
     }
 
     void HandleSpecialTimer()
     {
         specialActiveTimer -= Time.deltaTime;
-        if (specialActiveTimer <= 0f)
-        {
-            isDoingSpecial = false;
-            movement.isAttacking = false;
-            anim.Play("Scorpion_Idle", 0, 0f);
-            isSpecialOnCooldown = true;
-            specialCooldownTimer = specialCooldownDuration;
-        }
+        if (specialActiveTimer <= 0f) { isDoingSpecial = false; movement.isAttacking = false; anim.Play("Scorpion_Idle", 0, 0f); isSpecialOnCooldown = true; specialCooldownTimer = specialCooldownDuration; }
     }
 
     void ExecuteLowPunch()
@@ -237,11 +183,7 @@ public class PlayerCombat : MonoBehaviour
     void HandleLowPunchTimer()
     {
         lowPunchTimer -= Time.deltaTime;
-        if (lowPunchTimer <= 0f)
-        {
-            isLowPunching = false; movement.isAttacking = false;
-            if (Input.GetKey(keyCrouchModifier)) anim.Play("Crouch_In", 0, 1.0f); else anim.Play("Scorpion_Idle", 0, 0f);
-        }
+        if (lowPunchTimer <= 0f) { isLowPunching = false; movement.isAttacking = false; anim.Play("Scorpion_Idle", 0, 0f); }
     }
 
     void ExecuteUpperCut()
@@ -253,21 +195,14 @@ public class PlayerCombat : MonoBehaviour
     void HandleUpperCutTimer()
     {
         upperCutTimer -= Time.deltaTime;
-        if (upperCutTimer <= 0f)
-        {
-            isUpperCutting = false; movement.isAttacking = false;
-            if (Input.GetKey(keyCrouchModifier)) anim.Play("Crouch_In", 0, 1.0f); else anim.Play("Scorpion_Idle", 0, 0f);
-        }
+        if (upperCutTimer <= 0f) { isUpperCutting = false; movement.isAttacking = false; anim.Play("Scorpion_Idle", 0, 0f); }
     }
 
     void ExecuteMidPunch()
     {
         AnimatorStateInfo state = anim.GetCurrentAnimatorStateInfo(0);
         if (isKicking || isLowPunching || isUpperCutting || isDoingSpecial) return;
-        if (movement.isAttacking && state.normalizedTime < 0.75f)
-        {
-            if (state.IsName("MidPunch_R_Start") || state.IsName("MidPunch_L_Loop") || state.IsName("MidPunch_R_Loop")) return;
-        }
+        if (movement.isAttacking && state.normalizedTime < 0.75f) { if (state.IsName("MidPunch_R_Start") || state.IsName("MidPunch_L_Loop") || state.IsName("MidPunch_R_Loop")) return; }
         movement.isAttacking = true; comboResetTimer = 0f;
         if (comboStep == 0) { anim.Play("MidPunch_R_Start", 0, 0f); comboStep = 1; }
         else if (comboStep == 1) { anim.Play("MidPunch_L_Loop", 0, 0f); comboStep = 2; }
@@ -277,16 +212,13 @@ public class PlayerCombat : MonoBehaviour
     void DecideAndExecuteKick()
     {
         isKicking = true; movement.isAttacking = true;
-
         float moveInput = 0f;
         if (Input.GetKey(keyRight)) moveInput = 1f;
         else if (Input.GetKey(keyLeft)) moveInput = -1f;
 
         bool movingTowardRival = false;
-        if (movement.rival != null && moveInput != 0)
-        {
-            if ((movement.rival.position.x > transform.position.x && moveInput > 0) || (movement.rival.position.x < transform.position.x && moveInput < 0)) movingTowardRival = true;
-        }
+        if (movement.rival != null && moveInput != 0) { if ((movement.rival.position.x > transform.position.x && moveInput > 0) || (movement.rival.position.x < transform.position.x && moveInput < 0)) movingTowardRival = true; }
+
         if (movingTowardRival) { anim.Play("Kick_Walking", 0, 0f); kickActiveTimer = kickWalkingDuration; }
         else { anim.Play("Kick_standing", 0, 0f); kickActiveTimer = kickStandingDuration; }
     }
@@ -314,16 +246,27 @@ public class PlayerCombat : MonoBehaviour
         if (isSpecialOnCooldown) { specialCooldownTimer -= Time.deltaTime; if (specialCooldownTimer <= 0) isSpecialOnCooldown = false; }
     }
 
-    // ========================================================================
-    // --- EVENTOS DE ANIMACIÓN ACTUALIZADOS CON LA NUEVA HITBOX LOW PUNCH ---
-    // ========================================================================
+    public void CancelarAtaques()
+    {
+        isKicking = false;
+        isLowPunching = false;
+        isUpperCutting = false;
+        isDoingSpecial = false;
+        comboStep = 0;
+        movement.isAttacking = false;
+
+        DesactivarHitboxPunch();
+        DesactivarHitboxKick();
+        DesactivarHitboxLowPunch();
+        DesactivarHitboxUpperCut();
+    }
+
     public void ActivarHitboxPunch() { if (hitboxPunch != null) hitboxPunch.SetActive(true); }
     public void DesactivarHitboxPunch() { if (hitboxPunch != null) hitboxPunch.SetActive(false); }
 
     public void ActivarHitboxKick() { if (hitboxKick != null) hitboxKick.SetActive(true); }
     public void DesactivarHitboxKick() { if (hitboxKick != null) hitboxKick.SetActive(false); }
 
-    // Estas dos ahora controlan exclusivamente el nuevo objeto agachado
     public void ActivarHitboxLowPunch() { if (hitboxLowPunch != null) hitboxLowPunch.SetActive(true); }
     public void DesactivarHitboxLowPunch() { if (hitboxLowPunch != null) hitboxLowPunch.SetActive(false); }
 
