@@ -6,7 +6,22 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Menu_inicio.unity
+    guid: 2a523409a7a7e78459383c093fc90883
+  - enabled: 1
+    path: Assets/Scenes/Seleccion_Personaje.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Figth/Pelea.unity
+    guid: 370e10dafa344b347906b2875236e63a
+  - enabled: 1
+    path: Assets/Scenes/Arenas/Dead_Pool.unity
+    guid: 1f371cbd1420ac54a85fb52899619e44
+  - enabled: 1
+    path: Assets/Scenes/Arenas/Khan_Arena.unity
+    guid: 4dd23c57b1a6f244988b0eb66e6b2708
+  - enabled: 1
+    path: Assets/Scenes/Arenas/Armory.unity
+    guid: 71c6026b11a315943bbed62f69f0bf7b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
