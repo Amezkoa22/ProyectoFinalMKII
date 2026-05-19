@@ -901,13 +901,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a8d17ae2c7f2b4392dfe3fcf787ad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterSelect
-  borders:
+  botones:
+  - {fileID: 1478671265}
+  - {fileID: 1184597922}
+  - {fileID: 953885870}
+  bordes:
   - {fileID: 425777807}
   - {fileID: 1299613959}
   - {fileID: 2128129491}
-  colorA: {r: 0.1764706, g: 0.85098046, b: 0.08235294, a: 1}
-  colorB: {r: 0, g: 0.6, b: 0, a: 1}
-  speed: 4
+  personajesPorBoton: 000000000100000002000000
+  colorJugador1: {r: 1, g: 0.2, b: 0.2, a: 1}
+  colorJugador2: {r: 0.2, g: 0.4, b: 1, a: 1}
+  colorBordeAlterno: {r: 0, g: 0.6, b: 0, a: 1}
+  colorBloqueado: {r: 0.35, g: 0.35, b: 0.35, a: 1}
+  velocidadParpadeo: 4
+  escenaPelea: Pelea
 --- !u!4 &1224422574
 Transform:
   m_ObjectHideFlags: 0
