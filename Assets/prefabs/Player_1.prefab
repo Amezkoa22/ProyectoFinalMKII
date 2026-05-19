@@ -735,6 +735,7 @@ MonoBehaviour:
   hitboxLowPunch: {fileID: 2178866305893748840}
   hitboxUpperCut: {fileID: 4820913236935102934}
   isFrozen: 0
+  estaCongeladoVisualmente: 0
 --- !u!114 &4253673618904026150
 MonoBehaviour:
   m_ObjectHideFlags: 0

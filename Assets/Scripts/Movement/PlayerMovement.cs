@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Identificación de Jugador")]
-    public int playerNumber = 1; // 1 para Player 1 (WASD + O), 2 para Player 2 (TFGH + P)
+    public int playerNumber = 1;
 
     [Header("Configuración de Movimiento")]
     public float walkSpeed = 4f;
@@ -40,14 +40,13 @@ public class PlayerMovement : MonoBehaviour
     private float lockedHorizontalSpeed = 0f;
     private int flipDirection = 0;
 
-    // Variables de control añadidas para independizar la lectura de teclas
     private KeyCode keyUp;
     private KeyCode keyLeft;
     private KeyCode keyDown;
     private KeyCode keyRight;
     private KeyCode keyBlock;
 
-    private PlayerCombat combatScript; // Referencia para saber si está congelado
+    private PlayerCombat combatScript;
 
     void Start()
     {
@@ -57,14 +56,13 @@ public class PlayerMovement : MonoBehaviour
 
         UpdateHurtboxes();
 
-        // Asignación estricta de teclas WASD+O (P1) o TFGH+P (P2)
         if (playerNumber == 1)
         {
             keyUp = KeyCode.W;
             keyLeft = KeyCode.A;
             keyDown = KeyCode.S;
             keyRight = KeyCode.D;
-            keyBlock = KeyCode.O; // Tecla de bloqueo original P1
+            keyBlock = KeyCode.O;
         }
         else
         {
@@ -72,13 +70,12 @@ public class PlayerMovement : MonoBehaviour
             keyLeft = KeyCode.F;
             keyDown = KeyCode.G;
             keyRight = KeyCode.H;
-            keyBlock = KeyCode.P; // Tecla de bloqueo original P2
+            keyBlock = KeyCode.P;
         }
     }
 
     void Update()
     {
-        // Bloqueo total si el personaje está congelado
         if (combatScript != null && combatScript.isFrozen) return;
 
         Vector2 detectionCenter = new Vector2(transform.position.x, transform.position.y + 0.1f);
@@ -96,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
             isCrouching = false;
         }
 
-        LookAtRival(); // Corregido: Siempre se ejecuta, incluso si no hay input
+        LookAtRival();
         if (!isDiagonalJump) HandleVerticalJumpTimer();
 
         UpdateHurtboxes();
@@ -105,7 +102,6 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleInput()
     {
-        // Tu lógica exacta substituyendo las teclas WASD por las dinámicas
         bool holdS = Input.GetKey(keyDown);
         bool holdBlock = Input.GetKey(keyBlock);
 
@@ -126,7 +122,6 @@ public class PlayerMovement : MonoBehaviour
             isCrouching = false;
             isBlocking = false;
 
-            // Procesamos el Input manual WASD
             if (Input.GetKey(keyRight)) moveInput = 1f;
             else if (Input.GetKey(keyLeft)) moveInput = -1f;
             else moveInput = 0f;
@@ -163,7 +158,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Si está congelado, mantenemos su velocidad en X en 0 para que no se deslice
         if (combatScript != null && combatScript.isFrozen)
         {
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
@@ -219,7 +213,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (rival != null && isGrounded && !isBlocking)
         {
-            // Corregido: Solo se ignora si ESTA VISUALMENTE CONGELADO o atacando
             bool ignorarFlipping = isAttacking || (combatScript != null && combatScript.estaCongeladoVisualmente);
 
             if (!ignorarFlipping)

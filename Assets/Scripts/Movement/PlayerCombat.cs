@@ -70,10 +70,9 @@ public class PlayerCombat : MonoBehaviour
     private bool isSpecialOnCooldown = false;
     private float specialCooldownTimer = 0f;
 
-    // Cambiado a public para que PlayerMovement pueda leerlo
-    public bool isFrozen = false;
+    [HideInInspector] public bool isFrozen = false;
     private float freezeTimer = 0f;
-    public bool estaCongeladoVisualmente = false; // Cambiado a public por corrección
+    [HideInInspector] public bool estaCongeladoVisualmente = false;
 
     private bool isSpearExtending = false;
     private bool isSpearRetracting = false;
@@ -273,7 +272,7 @@ public class PlayerCombat : MonoBehaviour
         CancelarAtaques();
         isFrozen = true;
         freezeTimer = duracion;
-        estaCongeladoVisualmente = true; // Agregado para PlayerMovement
+        estaCongeladoVisualmente = true;
 
         if (movement != null)
         {
@@ -284,17 +283,7 @@ public class PlayerCombat : MonoBehaviour
 
         if (anim != null)
         {
-            anim.speed = 1f;
             anim.Play("Hit_Ice", 0, 0f);
-        }
-
-        Invoke("PausarAnimacionCongelado", 0.05f);
-    }
-
-    void PausarAnimacionCongelado()
-    {
-        if (isFrozen && anim != null)
-        {
             anim.speed = 0f;
         }
     }
@@ -302,15 +291,23 @@ public class PlayerCombat : MonoBehaviour
     void HandleFreezeTimer()
     {
         freezeTimer -= Time.deltaTime;
+
+        // SOLUCIÓN TOTAL: Forzado violento cuadro por cuadro
+        // Esto destruye los intentos de cualquier otro script de regresarlo a Idle
+        if (anim != null)
+        {
+            anim.Play("Hit_Ice", 0, 0f); // Lo mantiene clavado en el frame inicial de congelamiento
+            anim.speed = 0f;             // Mantiene el motor de animación congelado
+        }
+
         if (freezeTimer <= 0f)
         {
             isFrozen = false;
-            estaCongeladoVisualmente = false; // Agregado para PlayerMovement
+            estaCongeladoVisualmente = false;
 
             if (anim != null)
             {
                 anim.speed = 1f;
-                // Ajustado a Idle general para que funcione con SubZero clones
                 anim.Play("Scorpion_Idle", 0, 0f);
             }
             if (movement != null)
