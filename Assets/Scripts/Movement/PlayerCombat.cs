@@ -19,12 +19,16 @@ public class PlayerCombat : MonoBehaviour
     public float lowPunchDuration = 0.5f;
     public float upperCutDuration = 0.6f;
 
-    [Header("Ataque Especial: GetOverHere")]
-    public float specialDuration = 1.2f;
+    [Header("Ataque Especial: GetOverHere (Spear)")]
+    public Transform spearTransform;
+    public float spearGrowthSpeed = 25f;
+    public float maxSpearScale = 15f;
+    public float pullSpeed = 15f;
+    public float pullStopDistance = 1.5f;
     public float specialCooldownDuration = 6.0f;
     public float sequenceWindow = 0.4f;
 
-    [Header("Referencias de Hitboxes de Ataque (Objetos Hijos)")]
+    [Header("Referencias de Hitboxes de Ataque")]
     public GameObject hitboxPunch;
     public GameObject hitboxKick;
     public GameObject hitboxLowPunch;
@@ -49,10 +53,13 @@ public class PlayerCombat : MonoBehaviour
     private bool isUpperCutting = false;
     private float upperCutTimer = 0f;
 
+    // Variables de estado del Spear
     private bool isDoingSpecial = false;
     private bool isSpecialOnCooldown = false;
     private float specialCooldownTimer = 0f;
-    private float specialActiveTimer = 0f;
+    private bool isSpearExtending = false;
+    private bool isSpearRetracting = false;
+    private bool hasSpearHit = false;
 
     private KeyCode keyPunch;
     private KeyCode keyUpperCut;
@@ -75,7 +82,14 @@ public class PlayerCombat : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        // Corrección del SleepMode si daba advertencias
         if (rb != null) rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
+
+        if (spearTransform != null)
+        {
+            spearTransform.localScale = new Vector3(0, spearTransform.localScale.y, spearTransform.localScale.z);
+            spearTransform.gameObject.SetActive(false);
+        }
 
         if (playerNumber == 1)
         {
@@ -101,7 +115,8 @@ public class PlayerCombat : MonoBehaviour
     {
         HandleCooldowns();
 
-        if (isDoingSpecial) { HandleSpecialTimer(); return; }
+        if (isDoingSpecial) { HandleSpearLogic(); return; }
+
         if (isLowPunching) { HandleLowPunchTimer(); return; }
         if (isUpperCutting) { HandleUpperCutTimer(); return; }
 
@@ -164,14 +179,132 @@ public class PlayerCombat : MonoBehaviour
 
     void ExecuteGetOverHere()
     {
-        isDoingSpecial = true; movement.isAttacking = true;
-        anim.Play("GetOverHere", 0, 0f); specialActiveTimer = specialDuration;
+        isDoingSpecial = true;
+        movement.isAttacking = true;
+
+        isSpearExtending = false;
+        isSpearRetracting = false;
+        hasSpearHit = false;
+
+        anim.Play("GetOverHere", 0, 0f);
     }
 
-    void HandleSpecialTimer()
+    public void DispararSpear()
     {
-        specialActiveTimer -= Time.deltaTime;
-        if (specialActiveTimer <= 0f) { isDoingSpecial = false; movement.isAttacking = false; anim.Play("Scorpion_Idle", 0, 0f); isSpecialOnCooldown = true; specialCooldownTimer = specialCooldownDuration; }
+        if (spearTransform == null) return;
+
+        // CAMBIO DE ORIENTACIÓN: Orienta la Spear absoluta hacia el rival antes de salir disparada
+        if (movement != null && movement.rival != null)
+        {
+            bool enemyToRight = movement.rival.position.x > transform.position.x;
+            spearTransform.rotation = Quaternion.Euler(0f, enemyToRight ? 0f : 180f, 0f);
+        }
+
+        spearTransform.gameObject.SetActive(true);
+        spearTransform.localScale = new Vector3(0, spearTransform.localScale.y, spearTransform.localScale.z);
+
+        isSpearExtending = true;
+        isSpearRetracting = false;
+        hasSpearHit = false;
+
+        anim.speed = 0f;
+    }
+
+    void HandleSpearLogic()
+    {
+        if (!isSpearExtending && !isSpearRetracting) return;
+
+        if (isSpearExtending)
+        {
+            spearTransform.localScale += new Vector3(spearGrowthSpeed * Time.deltaTime, 0, 0);
+
+            SpriteRenderer sr = spearTransform.GetComponent<SpriteRenderer>();
+            float currentSpearLength = sr != null ? sr.bounds.size.x : Mathf.Abs(spearTransform.lossyScale.x);
+
+            float distanceToRival = movement.rival != null ? Mathf.Abs(movement.rival.position.x - transform.position.x) : float.MaxValue;
+
+            if (currentSpearLength >= distanceToRival)
+            {
+                if (movement.rival != null)
+                {
+                    PlayerMovement rivalMove = movement.rival.GetComponent<PlayerMovement>();
+                    PlayerStats rivalStats = movement.rival.GetComponent<PlayerStats>();
+
+                    if (rivalMove != null && !rivalMove.isBlocking)
+                    {
+                        hasSpearHit = true;
+                        isSpearExtending = false;
+                        isSpearRetracting = true;
+
+                        if (rivalStats != null) rivalStats.RecibirGolpe(5, AttackType.Mid, Hurtbox.HurtboxType.Normal);
+                    }
+                    else
+                    {
+                        isSpearExtending = false;
+                        isSpearRetracting = true;
+                    }
+                }
+            }
+            else if (spearTransform.localScale.x >= maxSpearScale)
+            {
+                isSpearExtending = false;
+                isSpearRetracting = true;
+            }
+        }
+        else if (isSpearRetracting)
+        {
+            spearTransform.localScale -= new Vector3(spearGrowthSpeed * Time.deltaTime, 0, 0);
+
+            if (hasSpearHit && movement.rival != null)
+            {
+                Rigidbody2D rivalRb = movement.rival.GetComponent<Rigidbody2D>();
+                if (rivalRb != null)
+                {
+                    float direction = transform.position.x < movement.rival.position.x ? 1f : -1f;
+                    float targetX = transform.position.x + (direction * pullStopDistance);
+
+                    // CAMBIO DE TRACCIÓN FLUIDA: Calcula la velocidad exacta requerida en este frame 
+                    // para que el rival termine su recorrido justo cuando la escala de la lanza toque 0.
+                    float effectivePullSpeed = pullSpeed;
+                    if (spearTransform.localScale.x > 0f)
+                    {
+                        float distanceLeft = Mathf.Abs(rivalRb.position.x - targetX);
+                        float timeLeft = spearTransform.localScale.x / spearGrowthSpeed;
+                        effectivePullSpeed = distanceLeft / timeLeft;
+                    }
+
+                    rivalRb.position = Vector2.MoveTowards(rivalRb.position, new Vector2(targetX, rivalRb.position.y), effectivePullSpeed * Time.deltaTime);
+                }
+            }
+
+            if (spearTransform.localScale.x <= 0)
+            {
+                if (hasSpearHit && movement.rival != null)
+                {
+                    Rigidbody2D rivalRb = movement.rival.GetComponent<Rigidbody2D>();
+                    if (rivalRb != null)
+                    {
+                        float direction = transform.position.x < movement.rival.position.x ? 1f : -1f;
+                        float targetX = transform.position.x + (direction * pullStopDistance);
+                        rivalRb.position = new Vector2(targetX, rivalRb.position.y);
+                    }
+                }
+
+                spearTransform.localScale = new Vector3(0, spearTransform.localScale.y, spearTransform.localScale.z);
+                spearTransform.gameObject.SetActive(false);
+
+                isSpearRetracting = false;
+                hasSpearHit = false;
+                isDoingSpecial = false;
+                movement.isAttacking = false;
+
+                anim.speed = 1f;
+                anim.Play("Scorpion_Idle", 0, 0f);
+
+                isSpecialOnCooldown = true;
+                specialCooldownTimer = specialCooldownDuration;
+            }
+        }
     }
 
     void ExecuteLowPunch()
@@ -255,12 +388,16 @@ public class PlayerCombat : MonoBehaviour
         comboStep = 0;
         movement.isAttacking = false;
 
+        if (spearTransform != null) spearTransform.gameObject.SetActive(false);
+        if (anim != null) anim.speed = 1f;
+
         DesactivarHitboxPunch();
         DesactivarHitboxKick();
         DesactivarHitboxLowPunch();
         DesactivarHitboxUpperCut();
     }
 
+    // MÉTODOS DE HITBOXES
     public void ActivarHitboxPunch() { if (hitboxPunch != null) hitboxPunch.SetActive(true); }
     public void DesactivarHitboxPunch() { if (hitboxPunch != null) hitboxPunch.SetActive(false); }
 
