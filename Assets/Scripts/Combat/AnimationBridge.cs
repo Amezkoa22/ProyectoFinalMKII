@@ -3,10 +3,12 @@ using UnityEngine;
 public class AnimationBridge : MonoBehaviour
 {
     private PlayerCombat playerCombat;
+    private PlayerStats playerStats; // Adición para comunicar con PlayerStats
 
     void Start()
     {
         playerCombat = GetComponentInParent<PlayerCombat>();
+        playerStats = GetComponentInParent<PlayerStats>(); // Obtenemos el componente hermano/padre
 
         if (playerCombat == null)
         {
@@ -97,6 +99,17 @@ public class AnimationBridge : MonoBehaviour
         if (playerCombat != null)
         {
             playerCombat.TerminarHabilidadFan();
+        }
+    }
+
+    // =========================================================================
+    // NUEVO MÉTODO: Escucha los eventos de audio desde las animaciones de Unity
+    // =========================================================================
+    public void TriggerAudioEvent(string eventName)
+    {
+        if (playerStats != null)
+        {
+            playerStats.ManejarEventoDeAudio(eventName);
         }
     }
 }

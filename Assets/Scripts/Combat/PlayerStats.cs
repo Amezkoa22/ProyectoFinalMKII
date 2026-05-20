@@ -11,14 +11,15 @@ public class PlayerStats : MonoBehaviour
     public float knockbackForce = 5f;
 
     [Header("Configuración Fatality (Hit_UpperCut)")]
-    [Tooltip("En qué punto de la animación se congelará (0.0 = inicio, 0.5 = mitad, 1.0 = final)")]
     [Range(0f, 1f)]
     public float freezeFrameNormalized = 0.5f;
+    public AudioClip audioFatality;
 
     private PlayerMovement movement;
     private PlayerCombat combat;
     private Animator anim;
     private Rigidbody2D rb;
+    private AudioSource audioSource;
 
     private bool isStunned = false;
     private float stunTimer = 0f;
@@ -35,7 +36,9 @@ public class PlayerStats : MonoBehaviour
         combat = GetComponent<PlayerCombat>();
         anim = GetComponentInChildren<Animator>();
 
-        // Nos aseguramos de restaurar la velocidad del Animator al iniciar la partida
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
         if (anim != null) anim.speed = 1f;
 
         rb = GetComponent<Rigidbody2D>();
@@ -85,10 +88,7 @@ public class PlayerStats : MonoBehaviour
 
             if (anim != null)
             {
-                // 1. Forzamos la animación Hit_UpperCut en el frame exacto que definas
                 anim.Play("Hit_UpperCut", 0, freezeFrameNormalized);
-
-                // 2. Congelamos el tiempo del Animator para evitar que vuelva a Idle
                 anim.speed = 0f;
             }
 
@@ -119,6 +119,20 @@ public class PlayerStats : MonoBehaviour
         else anim.Play("Hit_Stand", 0, 0f);
     }
 
+    // ==========================================
+    // RECEPTOR SIMPLIFICADO DEL PUENTE
+    // ==========================================
+    public void ManejarEventoDeAudio(string eventName)
+    {
+        if (eventName == "SonidoFatality")
+        {
+            if (audioSource != null && audioFatality != null)
+            {
+                audioSource.PlayOneShot(audioFatality);
+            }
+        }
+    }
+
     private void ActualizarBarraUI()
     {
         if (managerRondas != null)
@@ -143,7 +157,6 @@ public class PlayerStats : MonoBehaviour
 
             if (managerRondas != null) managerRondas.ReportarMuerte(movement.playerNumber);
 
-            // Apagamos los scripts de control
             if (movement != null) movement.enabled = false;
             if (combat != null) combat.enabled = false;
         }
