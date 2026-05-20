@@ -976,6 +976,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1628228327}
   - component: {fileID: 1628228326}
+  - component: {fileID: 1628228329}
   - component: {fileID: 1628228328}
   m_Layer: 0
   m_Name: _ManejadorVideo
@@ -1055,6 +1056,26 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
+--- !u!114 &1628228329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1628228325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c537900f43172540ae82490f3e1b259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ModoArcadeVideo
+  videoPlayer: {fileID: 28621898}
+  canvasGroupVideo: {fileID: 28621899}
+  pantallaRawImage: {fileID: 28621900}
+  tiempoEsperaInactivo: 7
+  velocidadFade: 1.5
+  videosDemostracion:
+  - {fileID: 32900000, guid: a31581d882a164a44bf83323c1066504, type: 3}
+  - {fileID: 32900000, guid: 76c5bdba8fbbd7c4ea54c8f08c7ad32c, type: 3}
 --- !u!1 &1645644464
 GameObject:
   m_ObjectHideFlags: 0
