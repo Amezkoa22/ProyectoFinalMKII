@@ -609,7 +609,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 3
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: f8a2b127dc3abfb4b941cf6ff5f7afe0, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -654,7 +654,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.01, y: 0.68}
+  m_Offset: {x: 0.01, y: 0.29}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -664,7 +664,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.58, y: 1.34}
+  m_Size: {x: 0.58, y: 0.517}
   m_EdgeRadius: 0
 --- !u!114 &8414434914502558168
 MonoBehaviour:
@@ -681,8 +681,8 @@ MonoBehaviour:
   playerNumber: 1
   walkSpeed: 1.8
   backwardSpeed: 1.3
-  jumpForce: 16
-  diagonalJumpSpeed: 3.6
+  jumpForce: 17
+  diagonalJumpSpeed: 3.8
   timeInFrame1: 0.09
   timeInFrame2: 0.1
   hurtboxNormal: {fileID: 5294046996310368763}

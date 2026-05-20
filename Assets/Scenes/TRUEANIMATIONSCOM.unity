@@ -172,9 +172,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3920872711919566838, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: f8a2b127dc3abfb4b941cf6ff5f7afe0, type: 2}
     - target: {fileID: 6102718965949959579, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
       propertyPath: m_Name
       value: Player_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850930285090937086, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
+      propertyPath: m_Size.y
+      value: 0.517
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850930285090937086, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.29
       objectReference: {fileID: 0}
     - target: {fileID: 8414434914502558168, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
       propertyPath: rival
@@ -553,9 +565,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3920872711919566838, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: f8a2b127dc3abfb4b941cf6ff5f7afe0, type: 2}
     - target: {fileID: 6102718965949959579, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: m_Name
       value: Player_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850930285090937086, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: m_Size.y
+      value: 0.517
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850930285090937086, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.29
       objectReference: {fileID: 0}
     - target: {fileID: 8414434914502558168, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: rival
