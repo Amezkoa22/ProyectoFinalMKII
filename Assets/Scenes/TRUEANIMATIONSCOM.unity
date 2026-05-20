@@ -557,6 +557,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_1
       objectReference: {fileID: 0}
+    - target: {fileID: 7814318572701059150, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: clipComeHere
+      value: 
+      objectReference: {fileID: 8300000, guid: b2bd35042111bbe48a7dbf5c7721d00f, type: 3}
+    - target: {fileID: 7814318572701059150, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: clipGetOverHere
+      value: 
+      objectReference: {fileID: 8300000, guid: bc682c2856411854193778a38456a3c5, type: 3}
     - target: {fileID: 8414434914502558168, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: rival
       value: 

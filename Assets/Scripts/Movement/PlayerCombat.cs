@@ -11,6 +11,11 @@ public class PlayerCombat : MonoBehaviour
     public bool esSubZero = false;
     public bool esKitana = false;
 
+    [Header("Configuración de Audio Especial (Scorpion)")]
+    public AudioClip clipGetOverHere;
+    public AudioClip clipComeHere;
+    private AudioSource localAudioSource;
+
     [Header("Configuración del Puño de Pie")]
     public float comboLimit = 0.5f;
     public float cooldownDuration = 0.4f;
@@ -103,6 +108,16 @@ public class PlayerCombat : MonoBehaviour
     {
         anim = GetComponentInChildren<Animator>();
         movement = GetComponent<PlayerMovement>();
+
+        // Conseguimos o añadimos dinámicamente el AudioSource para que no marque error
+        localAudioSource = GetComponent<AudioSource>();
+        if (localAudioSource == null)
+        {
+            localAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+        // Configuración básica para evitar que suene en bucle o al iniciar la escena
+        localAudioSource.playOnAwake = false;
+        localAudioSource.loop = false;
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null) rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
@@ -335,7 +350,6 @@ public class PlayerCombat : MonoBehaviour
 
     public void CongelarPorHielo(float duracion)
     {
-        // NO afecta si está bloqueando
         if (movement != null && movement.isBlocking) return;
 
         CancelarAtaques();
@@ -392,6 +406,20 @@ public class PlayerCombat : MonoBehaviour
         isSpearRetracting = false;
         hasSpearHit = false;
         anim.Play("GetOverHere", 0, 0f);
+
+        // Lógica de audio aleatorio agregada aquí
+        if (localAudioSource != null)
+        {
+            int aleatorio = Random.Range(0, 2); // Devuelve 0 o 1
+            if (aleatorio == 0 && clipGetOverHere != null)
+            {
+                localAudioSource.PlayOneShot(clipGetOverHere);
+            }
+            else if (aleatorio == 1 && clipComeHere != null)
+            {
+                localAudioSource.PlayOneShot(clipComeHere);
+            }
+        }
     }
 
     public void DispararSpear()
@@ -431,7 +459,6 @@ public class PlayerCombat : MonoBehaviour
                     PlayerMovement rivalMove = movement.rival.GetComponent<PlayerMovement>();
                     PlayerStats rivalStats = movement.rival.GetComponent<PlayerStats>();
 
-                    // El Spear YA tenía validación para ignorar el hit si el rival bloquea
                     if (rivalMove != null && !rivalMove.isBlocking)
                     {
                         hasSpearHit = true;
