@@ -37,9 +37,15 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Ataque Especial: Sub-Zero (Ice Ball)")]
     public GameObject iceBallPrefab;
-    public Transform spawnPointProyectil;
     public float iceBallSpeed = 12f;
     public float iceFreezeDuration = 3.0f;
+
+    [Header("Ataque Especial: Kitana (Fan Toss)")]
+    public GameObject fanPrefab;
+    public float fanSpeed = 14f;
+
+    [Header("Punto de Origen de Proyectiles (Compartido)")]
+    public Transform spawnPointProyectil;
 
     [Header("Referencias de Hitboxes de Ataque")]
     public GameObject hitboxPunch;
@@ -226,9 +232,62 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
+        if (esKitana)
+        {
+            if (enemyToRight)
+            {
+                if (uno == keyCrouchModifier && dos == keyRight && tres == keyPunch) { inputHistory.Clear(); ExecuteFanToss(); return true; }
+            }
+            else
+            {
+                if (uno == keyCrouchModifier && dos == keyLeft && tres == keyPunch) { inputHistory.Clear(); ExecuteFanToss(); return true; }
+            }
+        }
+
         return false;
     }
 
+    // --- MÉTODOS CORREGIDOS PARA KITANA (FAN TOSS) ---
+    void ExecuteFanToss()
+    {
+        isDoingSpecial = true;
+        movement.isAttacking = true;
+        anim.Play("FanToss", 0, 0f); // Cambiado a FanToss
+    }
+
+    public void LanzarFan()
+    {
+        if (fanPrefab == null) return;
+
+        bool enemyToRight = true;
+        if (movement.rival != null)
+        {
+            enemyToRight = movement.rival.position.x > transform.position.x;
+        }
+
+        Vector3 spawnPos = spawnPointProyectil != null ? spawnPointProyectil.position : transform.position + new Vector3(enemyToRight ? 1f : -1f, 0.5f, 0f);
+
+        GameObject proyectilGo = Instantiate(fanPrefab, spawnPos, Quaternion.identity);
+        KitanaFan scriptFan = proyectilGo.GetComponent<KitanaFan>();
+
+        if (scriptFan != null)
+        {
+            scriptFan.Inicializar(fanSpeed, transform, enemyToRight);
+        }
+
+        isDoingSpecial = false;
+        movement.isAttacking = false;
+        isSpecialOnCooldown = true;
+        specialCooldownTimer = specialCooldownDuration;
+    }
+
+    public void TerminarHabilidadFan()
+    {
+        isDoingSpecial = false;
+        movement.isAttacking = false;
+    }
+
+    // --- MÉTODOS DE ATAQUE ESPECIAL: SUB-ZERO ---
     void ExecuteIceBall()
     {
         isDoingSpecial = true;
@@ -292,12 +351,10 @@ public class PlayerCombat : MonoBehaviour
     {
         freezeTimer -= Time.deltaTime;
 
-        // SOLUCIÓN TOTAL: Forzado violento cuadro por cuadro
-        // Esto destruye los intentos de cualquier otro script de regresarlo a Idle
         if (anim != null)
         {
-            anim.Play("Hit_Ice", 0, 0f); // Lo mantiene clavado en el frame inicial de congelamiento
-            anim.speed = 0f;             // Mantiene el motor de animación congelado
+            anim.Play("Hit_Ice", 0, 0f);
+            anim.speed = 0f;
         }
 
         if (freezeTimer <= 0f)

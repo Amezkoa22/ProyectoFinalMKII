@@ -34,6 +34,7 @@ public class Cargador_Pelea : MonoBehaviour
         // 1) Instanciar al jugador 1
         GameObject prefabJ1 = ObtenerPrefab(Datos_Partida.personajeJugador1);
         GameObject jugador1 = Instantiate(prefabJ1, spawnJugador1.position, spawnJugador1.rotation);
+        jugador1.tag = "Player1";
 
         // 2) Instanciar al jugador 2.
         //    NO le aplicamos flip manual de escala: el LookAtRival de los scripts
@@ -41,6 +42,7 @@ public class Cargador_Pelea : MonoBehaviour
         //    cada frame según la posición del rival.
         GameObject prefabJ2 = ObtenerPrefab(Datos_Partida.personajeJugador2);
         GameObject jugador2 = Instantiate(prefabJ2, spawnJugador2.position, spawnJugador2.rotation);
+        jugador2.tag = "Player2";
 
         // 3) Asignar los rivales cruzados (cada jugador apunta al otro).
         AsignarRival(jugador1, jugador2.transform);
