@@ -353,6 +353,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_2
       objectReference: {fileID: 0}
+    - target: {fileID: 7850930285090937086, guid: 55d41e27ad7a7c0488653a5e6bb20283, type: 3}
+      propertyPath: m_Size.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850930285090937086, guid: 55d41e27ad7a7c0488653a5e6bb20283, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.28
+      objectReference: {fileID: 0}
     - target: {fileID: 8414434914502558168, guid: 55d41e27ad7a7c0488653a5e6bb20283, type: 3}
       propertyPath: rival
       value: 
@@ -515,7 +523,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1349300686922252981, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.45
+      value: -3.74
       objectReference: {fileID: 0}
     - target: {fileID: 1349300686922252981, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: m_LocalPosition.y
@@ -557,14 +565,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_1
       objectReference: {fileID: 0}
-    - target: {fileID: 7814318572701059150, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
-      propertyPath: clipComeHere
-      value: 
-      objectReference: {fileID: 8300000, guid: b2bd35042111bbe48a7dbf5c7721d00f, type: 3}
-    - target: {fileID: 7814318572701059150, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
-      propertyPath: clipGetOverHere
-      value: 
-      objectReference: {fileID: 8300000, guid: bc682c2856411854193778a38456a3c5, type: 3}
+    - target: {fileID: 7850930285090937086, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: m_Size.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850930285090937086, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.28
+      objectReference: {fileID: 0}
     - target: {fileID: 8414434914502558168, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: rival
       value: 

@@ -10,10 +10,16 @@ public class PlayerStats : MonoBehaviour
     public float stunDuration = 0.35f;
     public float knockbackForce = 5f;
 
+    [Header("Configuración Fatality (Hit_UpperCut)")]
+    [Range(0f, 1f)]
+    public float freezeFrameNormalized = 0.5f;
+    public AudioClip audioFatality;
+
     private PlayerMovement movement;
     private PlayerCombat combat;
     private Animator anim;
     private Rigidbody2D rb;
+    private AudioSource audioSource;
 
     private bool isStunned = false;
     private float stunTimer = 0f;
@@ -29,6 +35,12 @@ public class PlayerStats : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         combat = GetComponent<PlayerCombat>();
         anim = GetComponentInChildren<Animator>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        if (anim != null) anim.speed = 1f;
+
         rb = GetComponent<Rigidbody2D>();
         managerRondas = FindAnyObjectByType<Manager_Rondas>();
     }
@@ -58,10 +70,28 @@ public class PlayerStats : MonoBehaviour
     public void RecibirGolpe(int daño, AttackType tipoDeAtaque, Hurtbox.HurtboxType hurtboxImpactada)
     {
         if (isDead) return;
+
+        // Lógica de reproducción de audio (Al rival)
+        if (movement != null && movement.rival != null)
+        {
+            PlayerCombat combatRival = movement.rival.GetComponent<PlayerCombat>();
+            if (combatRival != null)
+            {
+                combatRival.ReproducirSonidoImpacto(movement.isBlocking);
+            }
+        }
+
+        // REACCIÓN AL GOLPE EN ESTADO DIZZY (FATALITY)
         if (isDizzy)
         {
             isDead = true;
-            anim.Play("Hit_UpperCut", 0, 0f);
+
+            if (anim != null)
+            {
+                anim.Play("Hit_UpperCut", 0, freezeFrameNormalized);
+                anim.speed = 0f;
+            }
+
             AplicarKnockback();
             if (managerRondas != null) managerRondas.ReportarGolpeFatality(movement.playerNumber);
             return;
@@ -89,6 +119,20 @@ public class PlayerStats : MonoBehaviour
         else anim.Play("Hit_Stand", 0, 0f);
     }
 
+    // ==========================================
+    // RECEPTOR SIMPLIFICADO DEL PUENTE
+    // ==========================================
+    public void ManejarEventoDeAudio(string eventName)
+    {
+        if (eventName == "SonidoFatality")
+        {
+            if (audioSource != null && audioFatality != null)
+            {
+                audioSource.PlayOneShot(audioFatality);
+            }
+        }
+    }
+
     private void ActualizarBarraUI()
     {
         if (managerRondas != null)
@@ -112,6 +156,9 @@ public class PlayerStats : MonoBehaviour
             else isDead = true;
 
             if (managerRondas != null) managerRondas.ReportarMuerte(movement.playerNumber);
+
+            if (movement != null) movement.enabled = false;
+            if (combat != null) combat.enabled = false;
         }
     }
 
