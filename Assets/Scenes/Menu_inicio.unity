@@ -382,7 +382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -150}
+  m_AnchoredPosition: {x: 2.6, y: -318}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &686712757
@@ -506,14 +506,14 @@ RectTransform:
   m_GameObject: {fileID: 878156371}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.43429393, y: 0.43429393, z: 0.43429393}
+  m_LocalScale: {x: 0.83799475, y: 0.93574756, z: 0.8488709}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1234678332}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.000015259}
+  m_AnchoredPosition: {x: 0, y: 0.000045777}
   m_SizeDelta: {x: 1544.3057, y: 1029.5421}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &878156373
@@ -585,7 +585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuMortalKombat
   flechaTransform: {fileID: 1893524856}
   flechaImage: {fileID: 1893524854}
-  espaciadoY: 30
+  espaciadoY: 70
   escenaStart: Seleccion_Personaje
   escenaCredits: Credits
   velocidadParpadeo: 0.35
@@ -639,7 +639,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -89}
+  m_AnchoredPosition: {x: -1.9, y: -183}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1153079337
@@ -987,14 +987,14 @@ RectTransform:
   m_GameObject: {fileID: 1893524853}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25119883, y: 0.25119883, z: 0.25119883}
+  m_LocalScale: {x: 0.3688855, y: 0.3688855, z: 0.3688855}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1234678332}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -62, y: -83}
+  m_AnchoredPosition: {x: -103.2, y: -182.2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2137252557
@@ -1032,7 +1032,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -119}
+  m_AnchoredPosition: {x: 2.3, y: -250}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2137252559
