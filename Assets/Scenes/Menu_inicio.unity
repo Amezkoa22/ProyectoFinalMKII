@@ -711,6 +711,8 @@ MonoBehaviour:
   escenaStart: Seleccion_Personaje
   escenaCredits: Credits
   velocidadParpadeo: 0.35
+  audioNavegacion: {fileID: 8300000, guid: e2731bd87b73bca4e8d482163e182ac1, type: 3}
+  audioConfirmacion: {fileID: 8300000, guid: 9e8c1dc7957b7cb4699c0acd88b06a8d, type: 3}
 --- !u!4 &1024438491
 Transform:
   m_ObjectHideFlags: 0

@@ -10,8 +10,8 @@ public class MenuPausa : MonoBehaviour
     public TextMeshProUGUI[] textosOpciones; // Elemento 0 = Resume, Elemento 1 = Main Menu
 
     [Header("Paleta de Color Arcade (Seleccionado)")]
-    public Color verdeClaro = new Color(0f, 1f, 0.5f); // Verde neón arcade
-    public Color azulOscuro = new Color(0f, 0.1f, 0.5f); // Azul profundo arcade
+    public Color verdeClaro = new Color(0f, 1f, 0.5f);
+    public Color azulOscuro = new Color(0f, 0.1f, 0.5f);
     public float velocidadParpadeoSeleccion = 15f;
 
     [Header("Paleta de Color Confirmación (Enter)")]
@@ -19,24 +19,33 @@ public class MenuPausa : MonoBehaviour
     public Color amarillo = Color.yellow;
     public float duracionParpadeoPresionado = 0.4f;
 
+    [Header("Efectos de Sonido Arcade")]
+    public AudioClip audioNavegacion;   // Sonido al mover las flechas
+    public AudioClip audioConfirmacion;  // Sonido al presionar Enter
+    private AudioSource audioSource;
+
     private int indiceSeleccionado = 0;
     private bool juegoPausado = false;
     private bool ejecutandoAccion = false;
 
     void Start()
     {
-        // El juego siempre inicia despausado
         panelPausa.SetActive(false);
         juegoPausado = false;
         Time.timeScale = 1f;
+
+        // Conseguimos o añadimos el componente de audio automáticamente
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
+        // Regonocimiento importante: nos aseguramos de que el sonido se escuche en la pausa
+        audioSource.ignoreListenerPause = true;
     }
 
     void Update()
     {
-        // Si el jugador presionó Enter y se está ejecutando la animación de carga, bloqueamos inputs del menú
         if (ejecutandoAccion) return;
 
-        // Activar / Desactivar Pausa con ESC
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (juegoPausado)
@@ -45,7 +54,6 @@ public class MenuPausa : MonoBehaviour
                 PausarJuego();
         }
 
-        // Lógica de navegación mediante teclado cuando está pausado
         if (juegoPausado)
         {
             ManejarNavegacionTeclado();
@@ -57,7 +65,7 @@ public class MenuPausa : MonoBehaviour
     {
         juegoPausado = true;
         panelPausa.SetActive(true);
-        Time.timeScale = 0f; // <--- CONGELA ABSOLUTAMENTE TODO EL JUEGO
+        Time.timeScale = 0f;
 
         indiceSeleccionado = 0;
         RestablecerEstiloTextos();
@@ -67,17 +75,20 @@ public class MenuPausa : MonoBehaviour
     {
         juegoPausado = false;
         panelPausa.SetActive(false);
-        Time.timeScale = 1f; // <--- EL TIEMPO VUELVE A LA NORMALIDAD
+        Time.timeScale = 1f;
     }
 
     void ManejarNavegacionTeclado()
     {
+        bool seMovio = false;
+
         // Flecha Arriba
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             indiceSeleccionado--;
             if (indiceSeleccionado < 0) indiceSeleccionado = textosOpciones.Length - 1;
             RestablecerEstiloTextos();
+            seMovio = true;
         }
         // Flecha Abajo
         else if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -85,11 +96,24 @@ public class MenuPausa : MonoBehaviour
             indiceSeleccionado++;
             if (indiceSeleccionado >= textosOpciones.Length) indiceSeleccionado = 0;
             RestablecerEstiloTextos();
+            seMovio = true;
+        }
+
+        // Si el jugador se movió, reproducimos el sonido de navegación
+        if (seMovio && audioSource != null && audioNavegacion != null)
+        {
+            audioSource.PlayOneShot(audioNavegacion);
         }
 
         // Confirmar con Enter
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            // Reproducimos el sonido de confirmación justo al presionar
+            if (audioSource != null && audioConfirmacion != null)
+            {
+                audioSource.PlayOneShot(audioConfirmacion);
+            }
+
             StartCoroutine(SecuenciaConfirmacionArcade());
         }
     }
@@ -100,7 +124,6 @@ public class MenuPausa : MonoBehaviour
         {
             if (i != indiceSeleccionado)
             {
-                // Las opciones no seleccionadas se quedan de un color gris/blanco apagado estático
                 textosOpciones[i].color = new Color(0.7f, 0.7f, 0.7f);
             }
         }
@@ -108,7 +131,6 @@ public class MenuPausa : MonoBehaviour
 
     void EfectoParpadeoSeleccionado()
     {
-        // Usamos Time.unscaledTime porque Time.time vale 0 cuando el juego está pausado
         float lerp = Mathf.PingPong(Time.unscaledTime * velocidadParpadeoSeleccion, 1f);
         textosOpciones[indiceSeleccionado].color = Color.Lerp(verdeClaro, azulOscuro, lerp);
     }
@@ -119,30 +141,25 @@ public class MenuPausa : MonoBehaviour
         float tiempoTranscurrido = 0f;
         bool colorAlternante = false;
 
-        // Parpadeo ultra rápido entre Blanco y Amarillo al estilo "INSERT COIN"
         while (tiempoTranscurrido < duracionParpadeoPresionado)
         {
             textosOpciones[indiceSeleccionado].color = colorAlternante ? blanco : amarillo;
             colorAlternante = !colorAlternante;
 
-            float intervalo = 0.04f; // velocidad del destello de confirmación
+            float intervalo = 0.04f;
             tiempoTranscurrido += intervalo;
 
-            // Requerimos "Realtime" para ignorar por completo el Time.timeScale = 0
             yield return new WaitForSecondsRealtime(intervalo);
         }
 
-        // Ejecutar las acciones tras el parpadeo
         if (indiceSeleccionado == 0)
         {
-            // Opción: RESUME
             DespausarJuego();
             ejecutandoAccion = false;
         }
         else if (indiceSeleccionado == 1)
         {
-            // Opción: BACK TO MAIN MENU
-            Time.timeScale = 1f; // ¡REGLA DE ORO! Siempre devuelve el tiempo a 1 antes de cambiar de escena
+            Time.timeScale = 1f;
             SceneManager.LoadScene("Menu_inicio");
         }
     }

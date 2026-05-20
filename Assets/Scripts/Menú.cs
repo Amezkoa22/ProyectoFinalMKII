@@ -21,6 +21,11 @@ public class MenuMortalKombat : MonoBehaviour
     [Header("Ajustes Visuales")]
     public float velocidadParpadeo = 0.35f;
 
+    [Header("Efectos de Sonido Arcade")]
+    public AudioClip audioNavegacion;   // Sonido al mover la flecha o usar mouse
+    public AudioClip audioConfirmacion;  // Sonido al presionar Enter/Espacio
+    private AudioSource audioSource;
+
     private int opcionSeleccionada = 0;
     private float tiempoParpadeo;
     private Vector2 posicionInicialFlecha;
@@ -28,6 +33,11 @@ public class MenuMortalKombat : MonoBehaviour
     void Start()
     {
         posicionInicialFlecha = flechaTransform.anchoredPosition;
+
+        // Conseguimos o añadimos el componente de audio automáticamente en el menú
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
         ActualizarPosicionFlecha();
     }
 
@@ -37,17 +47,25 @@ public class MenuMortalKombat : MonoBehaviour
         {
             opcionSeleccionada--;
             if (opcionSeleccionada < 0) opcionSeleccionada = 2;
+
+            // Sonar navegación al mover teclado
+            ReproducirSonido(audioNavegacion);
             ActualizarPosicionFlecha();
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
             opcionSeleccionada++;
             if (opcionSeleccionada > 2) opcionSeleccionada = 0;
+
+            // Sonar navegación al mover teclado
+            ReproducirSonido(audioNavegacion);
             ActualizarPosicionFlecha();
         }
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
+            // Sonar confirmación al presionar
+            ReproducirSonido(audioConfirmacion);
             EjecutarOpcion();
         }
 
@@ -70,8 +88,22 @@ public class MenuMortalKombat : MonoBehaviour
 
     public void SeleccionarOpcionPorMouse(int indice)
     {
-        opcionSeleccionada = indice;
-        ActualizarPosicionFlecha();
+        // Solo reproducimos el sonido si el mouse realmente cambia de opción (evita spam de clics)
+        if (opcionSeleccionada != indice)
+        {
+            opcionSeleccionada = indice;
+            ReproducirSonido(audioNavegacion);
+            ActualizarPosicionFlecha();
+        }
+    }
+
+    // Método auxiliar para reproducir los efectos de manera segura
+    private void ReproducirSonido(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
     }
 
     public void EjecutarOpcion()

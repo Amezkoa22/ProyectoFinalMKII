@@ -916,6 +916,8 @@ MonoBehaviour:
   colorBloqueado: {r: 0.35, g: 0.35, b: 0.35, a: 1}
   velocidadParpadeo: 4
   escenaPelea: Pelea
+  audioNavegacion: {fileID: 8300000, guid: e2731bd87b73bca4e8d482163e182ac1, type: 3}
+  audioConfirmacion: {fileID: 8300000, guid: 9e8c1dc7957b7cb4699c0acd88b06a8d, type: 3}
 --- !u!4 &1224422574
 Transform:
   m_ObjectHideFlags: 0

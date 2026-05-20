@@ -2515,6 +2515,8 @@ MonoBehaviour:
   blanco: {r: 1, g: 1, b: 1, a: 1}
   amarillo: {r: 0, g: 0, b: 0, a: 1}
   duracionParpadeoPresionado: 0.6
+  audioNavegacion: {fileID: 8300000, guid: e2731bd87b73bca4e8d482163e182ac1, type: 3}
+  audioConfirmacion: {fileID: 8300000, guid: 9e8c1dc7957b7cb4699c0acd88b06a8d, type: 3}
 --- !u!4 &1471822122
 Transform:
   m_ObjectHideFlags: 0

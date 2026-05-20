@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 // Turno 1: el Jugador 1 elige; al confirmar, ese personaje queda bloqueado.
 // Turno 2: el Jugador 2 elige entre los restantes; al confirmar, se escribe en
 // Datos_Partida, se elige una arena aleatoria y se carga la escena de pelea.
-
 public class CharacterSelect : MonoBehaviour
 {
     [Header("Botones de personaje (orden: Scorpion, SubZero, Kitana)")]
@@ -28,6 +27,11 @@ public class CharacterSelect : MonoBehaviour
     [Header("Escena de pelea a cargar al terminar la selección")]
     public string escenaPelea = "Pelea";
 
+    [Header("Efectos de Sonido Arcade")]
+    public AudioClip audioNavegacion;   // Sonido al mover el cursor
+    public AudioClip audioConfirmacion;  // Sonido al confirmar la selección
+    private AudioSource audioSource;
+
     private int indiceActual = 0;
     private int turnoActual = 1;       // 1 = Jugador 1, 2 = Jugador 2
     private int indiceJugador1 = -1;   // -1 = J1 aún no ha confirmado
@@ -42,6 +46,11 @@ public class CharacterSelect : MonoBehaviour
         {
             coloresOriginalesBotones[i] = botones[i].color;
         }
+
+        // Conseguimos o añadimos el componente de audio automáticamente
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+
         ActualizarBordes();
     }
 
@@ -81,6 +90,8 @@ public class CharacterSelect : MonoBehaviour
         }
         while (turnoActual == 2 && indiceActual == indiceJugador1 && intentos < botones.Length);
 
+        // Sonar navegación al mover el cursor de selección
+        ReproducirSonido(audioNavegacion);
         ActualizarBordes();
     }
 
@@ -119,6 +130,9 @@ public class CharacterSelect : MonoBehaviour
     {
         if (turnoActual == 1)
         {
+            // Sonar confirmación para el Jugador 1
+            ReproducirSonido(audioConfirmacion);
+
             // Bloquear el personaje del J1 y pasar al turno del J2
             indiceJugador1 = indiceActual;
             Datos_Partida.personajeJugador1 = personajesPorBoton[indiceActual];
@@ -134,6 +148,9 @@ public class CharacterSelect : MonoBehaviour
             // Seguridad: el cursor no debería poder estar sobre el bloqueado, pero por si acaso
             if (indiceActual == indiceJugador1) return;
 
+            // Sonar confirmación para el Jugador 2 (antes de cargar la pelea)
+            ReproducirSonido(audioConfirmacion);
+
             Datos_Partida.personajeJugador2 = personajesPorBoton[indiceActual];
 
             // Escenario aleatorio entre los tres
@@ -141,6 +158,15 @@ public class CharacterSelect : MonoBehaviour
             Datos_Partida.escenario = todos[Random.Range(0, todos.Length)];
 
             SceneManager.LoadScene(escenaPelea);
+        }
+    }
+
+    // Método auxiliar para reproducir efectos de manera limpia
+    private void ReproducirSonido(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
         }
     }
 }
