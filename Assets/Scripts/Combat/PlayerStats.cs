@@ -26,41 +26,31 @@ public class PlayerStats : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-
         movement = GetComponent<PlayerMovement>();
         combat = GetComponent<PlayerCombat>();
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
-
         managerRondas = FindAnyObjectByType<Manager_Rondas>();
     }
 
     void Update()
     {
         if (isDizzy || isDead) return;
-
         if (isStunned)
         {
             movement.isAttacking = true;
             stunTimer -= Time.deltaTime;
-
             if (rb != null && currentKnockbackSpeed != 0f)
             {
                 rb.position = new Vector2(rb.position.x + currentKnockbackSpeed * Time.deltaTime, rb.position.y);
             }
-
             currentKnockbackSpeed = Mathf.MoveTowards(currentKnockbackSpeed, 0f, Time.deltaTime * knockbackForce * 3f);
-
             if (stunTimer <= 0f)
             {
                 isStunned = false;
                 movement.isAttacking = false;
                 currentKnockbackSpeed = 0f;
-
-                if (anim != null)
-                {
-                    anim.Play("Scorpion_Idle", 0, 0f);
-                }
+                if (anim != null) anim.Play("Scorpion_Idle", 0, 0f);
             }
         }
     }
@@ -68,8 +58,7 @@ public class PlayerStats : MonoBehaviour
     public void RecibirGolpe(int daño, AttackType tipoDeAtaque, Hurtbox.HurtboxType hurtboxImpactada)
     {
         if (isDead) return;
-
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dizzy") || isDizzy)
+        if (isDizzy)
         {
             isDead = true;
             anim.Play("Hit_UpperCut", 0, 0f);
@@ -78,46 +67,34 @@ public class PlayerStats : MonoBehaviour
             return;
         }
 
-        if (movement.isBlocking)
-        {
-            currentHealth -= Mathf.RoundToInt(daño * 0.30f);
-            RevisarMuerte();
-            return;
-        }
+        int dañoFinal = movement.isBlocking ? Mathf.RoundToInt(daño * 0.30f) : daño;
+        currentHealth -= dañoFinal;
 
-        currentHealth -= daño;
+        ActualizarBarraUI();
         RevisarMuerte();
 
-        if (isDead) return;
+        if (isDead || isDizzy || movement.isBlocking) return;
 
         if (combat != null) combat.CancelarAtaques();
-
         isStunned = true;
         stunTimer = stunDuration;
         movement.isAttacking = true;
 
-        if (hurtboxImpactada == Hurtbox.HurtboxType.Jump)
+        if (hurtboxImpactada == Hurtbox.HurtboxType.Jump || (hurtboxImpactada == Hurtbox.HurtboxType.Normal && tipoDeAtaque == AttackType.Heavy))
         {
             anim.Play("Hit_UpperCut", 0, 0f);
             AplicarKnockback();
         }
-        else if (hurtboxImpactada == Hurtbox.HurtboxType.Crouch)
+        else if (hurtboxImpactada == Hurtbox.HurtboxType.Crouch) anim.Play("Hit_Duck", 0, 0f);
+        else anim.Play("Hit_Stand", 0, 0f);
+    }
+
+    private void ActualizarBarraUI()
+    {
+        if (managerRondas != null)
         {
-            anim.Play("Hit_Duck", 0, 0f);
-            currentKnockbackSpeed = 0f;
-        }
-        else if (hurtboxImpactada == Hurtbox.HurtboxType.Normal)
-        {
-            if (tipoDeAtaque == AttackType.Heavy)
-            {
-                anim.Play("Hit_UpperCut", 0, 0f);
-                AplicarKnockback();
-            }
-            else
-            {
-                anim.Play("Hit_Stand", 0, 0f);
-                currentKnockbackSpeed = 0f;
-            }
+            float porcentaje = (float)currentHealth / maxHealth;
+            managerRondas.ActualizarInterfazVida(movement.playerNumber, porcentaje);
         }
     }
 
@@ -130,20 +107,11 @@ public class PlayerStats : MonoBehaviour
             anim.Play("Hit_UpperCut", 0, 0f);
             AplicarKnockback();
 
-            if (managerRondas != null)
-            {
-                int winsEnemigo = movement.playerNumber == 1 ? Datos_Partida.victoriasJ2 : Datos_Partida.victoriasJ1;
-                if (winsEnemigo >= 1)
-                {
-                    isDizzy = true;
-                }
-                else
-                {
-                    isDead = true;
-                }
+            int victoriasEnemigo = movement.playerNumber == 1 ? Datos_Partida.victoriasJ2 : Datos_Partida.victoriasJ1;
+            if (victoriasEnemigo >= 1) isDizzy = true;
+            else isDead = true;
 
-                managerRondas.ReportarMuerte(movement.playerNumber);
-            }
+            if (managerRondas != null) managerRondas.ReportarMuerte(movement.playerNumber);
         }
     }
 
@@ -151,8 +119,8 @@ public class PlayerStats : MonoBehaviour
     {
         if (movement.rival != null && rb != null)
         {
-            float direccion = transform.position.x > movement.rival.position.x ? 1f : -1f;
-            currentKnockbackSpeed = direccion * knockbackForce;
+            float dir = transform.position.x > movement.rival.position.x ? 1f : -1f;
+            currentKnockbackSpeed = dir * knockbackForce;
         }
     }
 }
