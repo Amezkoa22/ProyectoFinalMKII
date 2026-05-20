@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
             keyLeft = KeyCode.A;
             keyDown = KeyCode.S;
             keyRight = KeyCode.D;
-            keyBlock = KeyCode.O;
+            keyBlock = KeyCode.N;
         }
         else
         {
@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
             keyLeft = KeyCode.F;
             keyDown = KeyCode.G;
             keyRight = KeyCode.H;
-            keyBlock = KeyCode.P;
+            keyBlock = KeyCode.M;
         }
     }
 

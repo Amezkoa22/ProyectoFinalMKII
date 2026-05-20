@@ -8,7 +8,7 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Configuración de Impacto")]
     public float stunDuration = 0.35f;
-    public float knockbackForce = 5f;  // Modifica esto en el inspector para la distancia de vuelo
+    public float knockbackForce = 5f;
 
     private PlayerMovement movement;
     private PlayerCombat combat;
@@ -40,15 +40,11 @@ public class PlayerStats : MonoBehaviour
             movement.isAttacking = true;
             stunTimer -= Time.deltaTime;
 
-            // --- CORRECCIÓN EXCLUSIVA PARA EL VUELO ---
-            // Modificamos 'rb.position' directamente en lugar de la velocidad.
-            // Esto le gana al script de movimiento si este intenta frenar al jugador.
             if (rb != null && currentKnockbackSpeed != 0f)
             {
                 rb.position = new Vector2(rb.position.x + currentKnockbackSpeed * Time.deltaTime, rb.position.y);
             }
 
-            // Desaceleración progresiva para que el deslizamiento sea fluido y decreciente
             currentKnockbackSpeed = Mathf.MoveTowards(currentKnockbackSpeed, 0f, Time.deltaTime * knockbackForce * 3f);
 
             if (stunTimer <= 0f)
@@ -67,7 +63,12 @@ public class PlayerStats : MonoBehaviour
 
     public void RecibirGolpe(int daño, AttackType tipoDeAtaque, Hurtbox.HurtboxType hurtboxImpactada)
     {
-        if (movement.isBlocking) return;
+        if (movement.isBlocking)
+        {
+            currentHealth -= Mathf.RoundToInt(daño * 0.30f);
+            if (currentHealth < 0) currentHealth = 0;
+            return;
+        }
 
         currentHealth -= daño;
         if (currentHealth < 0) currentHealth = 0;

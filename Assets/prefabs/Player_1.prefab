@@ -727,9 +727,11 @@ MonoBehaviour:
   pullSpeed: 2
   pullStopDistance: 1.35
   iceBallPrefab: {fileID: 0}
-  spawnPointProyectil: {fileID: 0}
   iceBallSpeed: 12
   iceFreezeDuration: 3
+  fanPrefab: {fileID: 0}
+  fanSpeed: 14
+  spawnPointProyectil: {fileID: 0}
   hitboxPunch: {fileID: 341461606042228524}
   hitboxKick: {fileID: 7735372898738566858}
   hitboxLowPunch: {fileID: 2178866305893748840}
