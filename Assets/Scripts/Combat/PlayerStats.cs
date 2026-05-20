@@ -19,6 +19,10 @@ public class PlayerStats : MonoBehaviour
     private float stunTimer = 0f;
     private float currentKnockbackSpeed = 0f;
 
+    private Manager_Rondas managerRondas;
+    private bool isDizzy = false;
+    private bool isDead = false;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -28,13 +32,13 @@ public class PlayerStats : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
-        if (movement == null) Debug.LogError($"[PlayerStats] No se encontró PlayerMovement en {gameObject.name}");
-        if (anim == null) Debug.LogError($"[PlayerStats] No se encontró el Animator en los hijos de {gameObject.name}");
-        if (rb == null) Debug.LogError($"[PlayerStats] No se encontró Rigidbody2D en {gameObject.name}");
+        managerRondas = FindAnyObjectByType<Manager_Rondas>();
     }
 
     void Update()
     {
+        if (isDizzy || isDead) return;
+
         if (isStunned)
         {
             movement.isAttacking = true;
@@ -63,15 +67,28 @@ public class PlayerStats : MonoBehaviour
 
     public void RecibirGolpe(int daño, AttackType tipoDeAtaque, Hurtbox.HurtboxType hurtboxImpactada)
     {
+        if (isDead) return;
+
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dizzy") || isDizzy)
+        {
+            isDead = true;
+            anim.Play("Hit_UpperCut", 0, 0f);
+            AplicarKnockback();
+            if (managerRondas != null) managerRondas.ReportarGolpeFatality(movement.playerNumber);
+            return;
+        }
+
         if (movement.isBlocking)
         {
             currentHealth -= Mathf.RoundToInt(daño * 0.30f);
-            if (currentHealth < 0) currentHealth = 0;
+            RevisarMuerte();
             return;
         }
 
         currentHealth -= daño;
-        if (currentHealth < 0) currentHealth = 0;
+        RevisarMuerte();
+
+        if (isDead) return;
 
         if (combat != null) combat.CancelarAtaques();
 
@@ -100,6 +117,32 @@ public class PlayerStats : MonoBehaviour
             {
                 anim.Play("Hit_Stand", 0, 0f);
                 currentKnockbackSpeed = 0f;
+            }
+        }
+    }
+
+    private void RevisarMuerte()
+    {
+        if (currentHealth <= 0 && !isDead && !isDizzy)
+        {
+            currentHealth = 0;
+            if (combat != null) combat.CancelarAtaques();
+            anim.Play("Hit_UpperCut", 0, 0f);
+            AplicarKnockback();
+
+            if (managerRondas != null)
+            {
+                int winsEnemigo = movement.playerNumber == 1 ? Datos_Partida.victoriasJ2 : Datos_Partida.victoriasJ1;
+                if (winsEnemigo >= 1)
+                {
+                    isDizzy = true;
+                }
+                else
+                {
+                    isDead = true;
+                }
+
+                managerRondas.ReportarMuerte(movement.playerNumber);
             }
         }
     }

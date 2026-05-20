@@ -682,7 +682,7 @@ MonoBehaviour:
   walkSpeed: 1.8
   backwardSpeed: 1.3
   jumpForce: 17
-  diagonalJumpSpeed: 3.8
+  diagonalJumpSpeed: 5
   timeInFrame1: 0.09
   timeInFrame2: 0.1
   hurtboxNormal: {fileID: 5294046996310368763}

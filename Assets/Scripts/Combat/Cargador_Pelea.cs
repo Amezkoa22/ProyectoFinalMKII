@@ -17,8 +17,9 @@ public class Cargador_Pelea : MonoBehaviour
     public string escenaKansArena = "Khan_Arena";
     public string escenaArmory = "Armory";
 
-    [Header("Referencia a la cámara que sigue a los jugadores")]
+    [Header("Referencias del Sistema")]
     public Camara_Seguimiento camara;
+    public Manager_Rondas managerRondas;
 
     void Start()
     {
@@ -45,6 +46,11 @@ public class Cargador_Pelea : MonoBehaviour
         SceneManager.sceneLoaded += AlCargarArena;
         string nombreEscena = ObtenerNombreEscenario(Datos_Partida.escenario);
         SceneManager.LoadScene(nombreEscena, LoadSceneMode.Additive);
+
+        if (managerRondas != null)
+        {
+            managerRondas.IniciarRonda(jugador1, jugador2);
+        }
     }
 
     void AlCargarArena(Scene escenaCargada, LoadSceneMode modo)
