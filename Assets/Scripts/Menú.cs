@@ -73,6 +73,8 @@ public class MenuMortalKombat : MonoBehaviour
         }
     }
 
+ 
+
     void ActualizarPosicionFlecha()
     {
         flechaImage.enabled = true;
