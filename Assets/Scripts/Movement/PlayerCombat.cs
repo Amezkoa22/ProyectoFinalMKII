@@ -236,23 +236,22 @@ public class PlayerCombat : MonoBehaviour
         {
             if (enemyToRight)
             {
-                if (uno == keyCrouchModifier && dos == keyRight && tres == keyPunch) { inputHistory.Clear(); ExecuteFanToss(); return true; }
+                if (uno == keyLeft && dos == keyRight && tres == keyKick) { inputHistory.Clear(); ExecuteFanToss(); return true; }
             }
             else
             {
-                if (uno == keyCrouchModifier && dos == keyLeft && tres == keyPunch) { inputHistory.Clear(); ExecuteFanToss(); return true; }
+                if (uno == keyRight && dos == keyLeft && tres == keyKick) { inputHistory.Clear(); ExecuteFanToss(); return true; }
             }
         }
 
         return false;
     }
 
-    // --- MÉTODOS CORREGIDOS PARA KITANA (FAN TOSS) ---
     void ExecuteFanToss()
     {
         isDoingSpecial = true;
         movement.isAttacking = true;
-        anim.Play("FanToss", 0, 0f); // Cambiado a FanToss
+        anim.Play("FanToss", 0, 0f);
     }
 
     public void LanzarFan()
@@ -267,16 +266,21 @@ public class PlayerCombat : MonoBehaviour
 
         Vector3 spawnPos = spawnPointProyectil != null ? spawnPointProyectil.position : transform.position + new Vector3(enemyToRight ? 1f : -1f, 0.5f, 0f);
 
-        GameObject proyectilGo = Instantiate(fanPrefab, spawnPos, Quaternion.identity);
-        KitanaFan scriptFan = proyectilGo.GetComponent<KitanaFan>();
+        GameObject proyectilGo = Instantiate(fanPrefab, spawnPos, Quaternion.identity, null);
 
+        KitanaFan scriptFan = proyectilGo.GetComponent<KitanaFan>();
         if (scriptFan != null)
         {
             scriptFan.Inicializar(fanSpeed, transform, enemyToRight);
         }
 
-        isDoingSpecial = false;
-        movement.isAttacking = false;
+        Vector3 escalaOriginal = fanPrefab.transform.localScale;
+        proyectilGo.transform.localScale = new Vector3(
+            enemyToRight ? escalaOriginal.x : -escalaOriginal.x,
+            escalaOriginal.y,
+            escalaOriginal.z
+        );
+
         isSpecialOnCooldown = true;
         specialCooldownTimer = specialCooldownDuration;
     }
@@ -285,9 +289,13 @@ public class PlayerCombat : MonoBehaviour
     {
         isDoingSpecial = false;
         movement.isAttacking = false;
+
+        if (anim != null)
+        {
+            anim.Play("Scorpion_Idle", 0, 0f);
+        }
     }
 
-    // --- MÉTODOS DE ATAQUE ESPECIAL: SUB-ZERO ---
     void ExecuteIceBall()
     {
         isDoingSpecial = true;
@@ -314,8 +322,6 @@ public class PlayerCombat : MonoBehaviour
             scriptBola.Inicializar(iceBallSpeed, iceFreezeDuration, transform, enemyToRight);
         }
 
-        isDoingSpecial = false;
-        movement.isAttacking = false;
         isSpecialOnCooldown = true;
         specialCooldownTimer = specialCooldownDuration;
     }
@@ -324,10 +330,14 @@ public class PlayerCombat : MonoBehaviour
     {
         isDoingSpecial = false;
         movement.isAttacking = false;
+        if (anim != null) anim.Play("Scorpion_Idle", 0, 0f);
     }
 
     public void CongelarPorHielo(float duracion)
     {
+        // NO afecta si está bloqueando
+        if (movement != null && movement.isBlocking) return;
+
         CancelarAtaques();
         isFrozen = true;
         freezeTimer = duracion;
@@ -421,6 +431,7 @@ public class PlayerCombat : MonoBehaviour
                     PlayerMovement rivalMove = movement.rival.GetComponent<PlayerMovement>();
                     PlayerStats rivalStats = movement.rival.GetComponent<PlayerStats>();
 
+                    // El Spear YA tenía validación para ignorar el hit si el rival bloquea
                     if (rivalMove != null && !rivalMove.isBlocking)
                     {
                         hasSpearHit = true;

@@ -124,11 +124,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1349300686922252981, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
   m_PrefabInstance: {fileID: 8980708640702211325}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &501750872 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 706242327964444625, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
-  m_PrefabInstance: {fileID: 591464828}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &591464828
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -139,7 +134,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1349300686922252981, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.71
+      value: 3.84
       objectReference: {fileID: 0}
     - target: {fileID: 1349300686922252981, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -181,18 +176,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_3
       objectReference: {fileID: 0}
-    - target: {fileID: 7814318572701059150, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
-      propertyPath: fanSpeed
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 7814318572701059150, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
-      propertyPath: fanPrefab
-      value: 
-      objectReference: {fileID: 3926788374073623927, guid: bcc2939e23a4e164f944c5adc6ace93c, type: 3}
-    - target: {fileID: 7814318572701059150, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
-      propertyPath: spawnPointProyectil
-      value: 
-      objectReference: {fileID: 501750872}
     - target: {fileID: 8414434914502558168, guid: c7bf86741620f2744baf9704e264f15d, type: 3}
       propertyPath: rival
       value: 
@@ -532,7 +515,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1349300686922252981, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.89
+      value: -4.45
       objectReference: {fileID: 0}
     - target: {fileID: 1349300686922252981, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: m_LocalPosition.y
@@ -573,10 +556,6 @@ PrefabInstance:
     - target: {fileID: 6102718965949959579, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: m_Name
       value: Player_1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8240989662753053717, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
-      propertyPath: m_SortingOrder
-      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8414434914502558168, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: rival

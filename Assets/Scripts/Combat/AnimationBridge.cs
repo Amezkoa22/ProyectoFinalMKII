@@ -6,7 +6,6 @@ public class AnimationBridge : MonoBehaviour
 
     void Start()
     {
-        // Busca automáticamente el componente PlayerCombat en el objeto padre
         playerCombat = GetComponentInParent<PlayerCombat>();
 
         if (playerCombat == null)
@@ -14,10 +13,6 @@ public class AnimationBridge : MonoBehaviour
             Debug.LogError("No se encontró el componente PlayerCombat en el objeto padre de " + gameObject.name);
         }
     }
-
-    // ==========================================
-    // PUENTES PARA COMBATE BÁSICO
-    // ==========================================
 
     public void ActivarHitboxPunch()
     {
@@ -59,10 +54,6 @@ public class AnimationBridge : MonoBehaviour
         if (playerCombat != null) playerCombat.DesactivarHitboxUpperCut();
     }
 
-    // ==========================================
-    // PUENTE PARA EL ATAQUE ESPECIAL (SPEAR)
-    // ==========================================
-
     public void DispararSpear()
     {
         if (playerCombat != null)
@@ -71,10 +62,8 @@ public class AnimationBridge : MonoBehaviour
         }
     }
 
-    // Agrega esto dentro de tu script AnimationBridge.cs
     public void DispararHieloSubZero()
     {
-        // Busca el componente PlayerCombat que está en el mismo objeto o en el padre
         PlayerCombat combat = GetComponentInParent<PlayerCombat>();
         if (combat == null) combat = GetComponent<PlayerCombat>();
 
@@ -92,6 +81,22 @@ public class AnimationBridge : MonoBehaviour
         if (combat != null)
         {
             combat.TerminarHabilidadIceBall();
+        }
+    }
+
+    public void LanzarFan()
+    {
+        if (playerCombat != null)
+        {
+            playerCombat.LanzarFan();
+        }
+    }
+
+    public void TerminarHabilidadFan()
+    {
+        if (playerCombat != null)
+        {
+            playerCombat.TerminarHabilidadFan();
         }
     }
 }
