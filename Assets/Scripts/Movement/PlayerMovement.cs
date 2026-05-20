@@ -71,12 +71,22 @@ public class PlayerMovement : MonoBehaviour
             keyDown = KeyCode.G;
             keyRight = KeyCode.H;
             keyBlock = KeyCode.M;
+
+            transform.rotation = Quaternion.Euler(0, 180f, 0);
         }
     }
 
     void Update()
     {
-        if (combatScript != null && combatScript.isFrozen) return;
+        if (combatScript != null)
+        {
+            if (combatScript.isFrozen) return;
+
+            if (playerNumber == 2 && transform.rotation.eulerAngles.y != 0)
+            {
+                transform.rotation = Quaternion.identity; // Quaternion.identity equivale a (0,0,0)
+            }
+        }
 
         Vector2 detectionCenter = new Vector2(transform.position.x, transform.position.y + 0.1f);
         isGrounded = Physics2D.OverlapCircle(detectionCenter, 0.2f, groundLayer);

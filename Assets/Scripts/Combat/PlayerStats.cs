@@ -71,7 +71,6 @@ public class PlayerStats : MonoBehaviour
     {
         if (isDead) return;
 
-        // Lógica de reproducción de audio (Al rival)
         if (movement != null && movement.rival != null)
         {
             PlayerCombat combatRival = movement.rival.GetComponent<PlayerCombat>();
@@ -81,7 +80,6 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
-        // REACCIÓN AL GOLPE EN ESTADO DIZZY (FATALITY)
         if (isDizzy)
         {
             isDead = true;
@@ -119,9 +117,6 @@ public class PlayerStats : MonoBehaviour
         else anim.Play("Hit_Stand", 0, 0f);
     }
 
-    // ==========================================
-    // RECEPTOR SIMPLIFICADO DEL PUENTE
-    // ==========================================
     public void ManejarEventoDeAudio(string eventName)
     {
         if (eventName == "SonidoFatality")

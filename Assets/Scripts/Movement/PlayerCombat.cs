@@ -113,13 +113,11 @@ public class PlayerCombat : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         movement = GetComponent<PlayerMovement>();
 
-        // Conseguimos o añadimos dinámicamente el AudioSource para que no marque error
         localAudioSource = GetComponent<AudioSource>();
         if (localAudioSource == null)
         {
             localAudioSource = gameObject.AddComponent<AudioSource>();
         }
-        // Configuración básica para evitar que suene en bucle o al iniciar la escena
         localAudioSource.playOnAwake = false;
         localAudioSource.loop = false;
 
@@ -206,9 +204,6 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // NUEVA FUNCIÓN PARA REPRODUCIR IMPACTOS
-    // ==========================================
     public void ReproducirSonidoImpacto(bool estaBloqueando)
     {
         if (localAudioSource == null) return;

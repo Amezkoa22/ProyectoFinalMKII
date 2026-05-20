@@ -34,7 +34,6 @@ public class MenuMortalKombat : MonoBehaviour
     {
         posicionInicialFlecha = flechaTransform.anchoredPosition;
 
-        // Conseguimos o añadimos el componente de audio automáticamente en el menú
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
 
@@ -48,7 +47,6 @@ public class MenuMortalKombat : MonoBehaviour
             opcionSeleccionada--;
             if (opcionSeleccionada < 0) opcionSeleccionada = 2;
 
-            // Sonar navegación al mover teclado
             ReproducirSonido(audioNavegacion);
             ActualizarPosicionFlecha();
         }
@@ -57,14 +55,12 @@ public class MenuMortalKombat : MonoBehaviour
             opcionSeleccionada++;
             if (opcionSeleccionada > 2) opcionSeleccionada = 0;
 
-            // Sonar navegación al mover teclado
             ReproducirSonido(audioNavegacion);
             ActualizarPosicionFlecha();
         }
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
-            // Sonar confirmación al presionar
             ReproducirSonido(audioConfirmacion);
             EjecutarOpcion();
         }
@@ -88,7 +84,6 @@ public class MenuMortalKombat : MonoBehaviour
 
     public void SeleccionarOpcionPorMouse(int indice)
     {
-        // Solo reproducimos el sonido si el mouse realmente cambia de opción (evita spam de clics)
         if (opcionSeleccionada != indice)
         {
             opcionSeleccionada = indice;
@@ -97,7 +92,6 @@ public class MenuMortalKombat : MonoBehaviour
         }
     }
 
-    // Método auxiliar para reproducir los efectos de manera segura
     private void ReproducirSonido(AudioClip clip)
     {
         if (audioSource != null && clip != null)

@@ -14,15 +14,12 @@ public class PlayerController : MonoBehaviour
     {
         if (rival != null)
         {
-            // Comparamos posiciones X
             if (rival.position.x > transform.position.x)
             {
-                // El rival está a la derecha, mirar a la derecha
                 visualPart.localScale = new Vector3(1, 1, 1);
             }
             else
             {
-                // El rival está a la izquierda, mirar a la izquierda (espejo)
                 visualPart.localScale = new Vector3(-1, 1, 1);
             }
         }

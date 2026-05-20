@@ -34,11 +34,9 @@ public class MenuPausa : MonoBehaviour
         juegoPausado = false;
         Time.timeScale = 1f;
 
-        // Conseguimos o añadimos el componente de audio automáticamente
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
 
-        // Regonocimiento importante: nos aseguramos de que el sonido se escuche en la pausa
         audioSource.ignoreListenerPause = true;
     }
 
@@ -82,7 +80,6 @@ public class MenuPausa : MonoBehaviour
     {
         bool seMovio = false;
 
-        // Flecha Arriba
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             indiceSeleccionado--;
@@ -90,7 +87,6 @@ public class MenuPausa : MonoBehaviour
             RestablecerEstiloTextos();
             seMovio = true;
         }
-        // Flecha Abajo
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             indiceSeleccionado++;
@@ -99,16 +95,13 @@ public class MenuPausa : MonoBehaviour
             seMovio = true;
         }
 
-        // Si el jugador se movió, reproducimos el sonido de navegación
         if (seMovio && audioSource != null && audioNavegacion != null)
         {
             audioSource.PlayOneShot(audioNavegacion);
         }
 
-        // Confirmar con Enter
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            // Reproducimos el sonido de confirmación justo al presionar
             if (audioSource != null && audioConfirmacion != null)
             {
                 audioSource.PlayOneShot(audioConfirmacion);

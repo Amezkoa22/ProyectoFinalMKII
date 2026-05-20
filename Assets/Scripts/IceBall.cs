@@ -17,10 +17,8 @@ public class IceBall : MonoBehaviour
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
-        // Orientar el sprite del proyectil según la dirección
         transform.localScale = new Vector3(haciaDerecha ? Mathf.Abs(transform.localScale.x) : -Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
 
-        // Asignar velocidad lineal directa en el Rigidbody2D
         if (rb != null)
         {
             rb.linearVelocity = new Vector2(haciaDerecha ? speed : -speed, 0f);
@@ -29,10 +27,8 @@ public class IceBall : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Evitar registrar múltiples choques al mismo tiempo
         if (stateHit) return;
 
-        // Validar que choque con el rival y no con quien lo lanzó
         if (collision.transform != owner && (collision.CompareTag("Player") || collision.GetComponent<PlayerMovement>() != null))
         {
             PlayerMovement rivalMove = collision.GetComponent<PlayerMovement>();
@@ -42,7 +38,6 @@ public class IceBall : MonoBehaviour
                 stateHit = true;
                 if (rb != null) rb.linearVelocity = Vector2.zero; // Detener el proyectil inmediatamente
 
-                // Si el rival NO está bloqueando, lo congelamos por completo
                 if (!rivalMove.isBlocking)
                 {
                     PlayerCombat rivalCombat = collision.GetComponent<PlayerCombat>();
@@ -59,7 +54,6 @@ public class IceBall : MonoBehaviour
                 }
                 else
                 {
-                    // Si bloqueaba, solo restará vida (se gestionará al 100% en la fase del rework del bloqueo)
                     PlayerStats rivalStats = collision.GetComponent<PlayerStats>();
                     if (rivalStats != null)
                     {
@@ -67,7 +61,6 @@ public class IceBall : MonoBehaviour
                     }
                 }
 
-                // Iniciar secuencia de destrucción visual
                 ExecuteImpact();
             }
         }
@@ -78,7 +71,6 @@ public class IceBall : MonoBehaviour
         if (anim != null)
         {
             anim.Play("IceImpact", 0, 0f);
-            // Buscamos la duración de la animación de impacto para destruirlo de forma exacta
             AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
             Destroy(gameObject, stateInfo.length > 0 ? stateInfo.length : 0.3f);
         }
