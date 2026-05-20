@@ -382,7 +382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -123}
+  m_AnchoredPosition: {x: 30, y: -150}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &686712757
@@ -514,7 +514,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0.000015259}
-  m_SizeDelta: {x: 1210.854, y: 807.24}
+  m_SizeDelta: {x: 1544.3057, y: 1029.5421}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &878156373
 MonoBehaviour:
@@ -585,9 +585,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuMortalKombat
   flechaTransform: {fileID: 1893524856}
   flechaImage: {fileID: 1893524854}
-  espaciadoY: 23
+  espaciadoY: 30
   escenaStart: Seleccion_Personaje
-  escenaCredits: 
+  escenaCredits: Credits
   velocidadParpadeo: 0.35
 --- !u!4 &1024438491
 Transform:
@@ -639,7 +639,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -62}
+  m_AnchoredPosition: {x: 30, y: -89}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1153079337
@@ -994,7 +994,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -56.8, y: -65.3}
+  m_AnchoredPosition: {x: -62, y: -83}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2137252557
@@ -1032,7 +1032,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -92}
+  m_AnchoredPosition: {x: 30, y: -119}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2137252559
