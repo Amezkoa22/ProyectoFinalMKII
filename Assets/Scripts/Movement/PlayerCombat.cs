@@ -11,6 +11,10 @@ public class PlayerCombat : MonoBehaviour
     public bool esSubZero = false;
     public bool esKitana = false;
 
+    [Header("Configuración de Audio Común (Impactos)")]
+    public AudioClip clipGolpeNormal;      // Sonido cuando es golpeado sin bloquear
+    public AudioClip clipGolpeBloqueado;   // Sonido cuando es golpeado bloqueando
+
     [Header("Configuración de Audio Especial (Scorpion)")]
     public AudioClip clipGetOverHere;
     public AudioClip clipComeHere;
@@ -198,6 +202,29 @@ public class PlayerCombat : MonoBehaviour
             if (movement.isAttacking && !isKicking && !isLowPunching && !isUpperCutting && !isDoingSpecial)
             {
                 CheckPunchStatus();
+            }
+        }
+    }
+
+    // ==========================================
+    // NUEVA FUNCIÓN PARA REPRODUCIR IMPACTOS
+    // ==========================================
+    public void ReproducirSonidoImpacto(bool estaBloqueando)
+    {
+        if (localAudioSource == null) return;
+
+        if (estaBloqueando)
+        {
+            if (clipGolpeBloqueado != null)
+            {
+                localAudioSource.PlayOneShot(clipGolpeBloqueado);
+            }
+        }
+        else
+        {
+            if (clipGolpeNormal != null)
+            {
+                localAudioSource.PlayOneShot(clipGolpeNormal);
             }
         }
     }
@@ -465,11 +492,17 @@ public class PlayerCombat : MonoBehaviour
                         isSpearExtending = false;
                         isSpearRetracting = true;
                         if (rivalStats != null) rivalStats.RecibirGolpe(5, AttackType.Mid, Hurtbox.HurtboxType.Normal);
+
+                        // Sonido de impacto normal para el arpón
+                        ReproducirSonidoImpacto(false);
                     }
                     else
                     {
                         isSpearExtending = false;
                         isSpearRetracting = true;
+
+                        // Sonido de bloqueo para el arpón si estaba bloqueando
+                        if (rivalMove != null && rivalMove.isBlocking) ReproducirSonidoImpacto(true);
                     }
                 }
             }

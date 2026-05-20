@@ -353,6 +353,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_2
       objectReference: {fileID: 0}
+    - target: {fileID: 7814318572701059150, guid: 55d41e27ad7a7c0488653a5e6bb20283, type: 3}
+      propertyPath: clipGolpeNormal
+      value: 
+      objectReference: {fileID: 8300000, guid: f9961e31e38a146429df78c240a573ca, type: 3}
+    - target: {fileID: 7814318572701059150, guid: 55d41e27ad7a7c0488653a5e6bb20283, type: 3}
+      propertyPath: clipGolpeBloqueado
+      value: 
+      objectReference: {fileID: 8300000, guid: 4b28bd2f11c7f264fbb373bd708be87d, type: 3}
     - target: {fileID: 8414434914502558168, guid: 55d41e27ad7a7c0488653a5e6bb20283, type: 3}
       propertyPath: rival
       value: 
@@ -565,6 +573,14 @@ PrefabInstance:
       propertyPath: clipGetOverHere
       value: 
       objectReference: {fileID: 8300000, guid: bc682c2856411854193778a38456a3c5, type: 3}
+    - target: {fileID: 7814318572701059150, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: clipGolpeNormal
+      value: 
+      objectReference: {fileID: 8300000, guid: f9961e31e38a146429df78c240a573ca, type: 3}
+    - target: {fileID: 7814318572701059150, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
+      propertyPath: clipGolpeBloqueado
+      value: 
+      objectReference: {fileID: 8300000, guid: 4b28bd2f11c7f264fbb373bd708be87d, type: 3}
     - target: {fileID: 8414434914502558168, guid: 076fd16aada94174fb8ccf9518cb9614, type: 3}
       propertyPath: rival
       value: 

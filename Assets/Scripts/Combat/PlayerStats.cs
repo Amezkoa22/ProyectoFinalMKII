@@ -10,6 +10,11 @@ public class PlayerStats : MonoBehaviour
     public float stunDuration = 0.35f;
     public float knockbackForce = 5f;
 
+    [Header("Configuración Fatality (Hit_UpperCut)")]
+    [Tooltip("En qué punto de la animación se congelará (0.0 = inicio, 0.5 = mitad, 1.0 = final)")]
+    [Range(0f, 1f)]
+    public float freezeFrameNormalized = 0.5f;
+
     private PlayerMovement movement;
     private PlayerCombat combat;
     private Animator anim;
@@ -29,6 +34,10 @@ public class PlayerStats : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         combat = GetComponent<PlayerCombat>();
         anim = GetComponentInChildren<Animator>();
+
+        // Nos aseguramos de restaurar la velocidad del Animator al iniciar la partida
+        if (anim != null) anim.speed = 1f;
+
         rb = GetComponent<Rigidbody2D>();
         managerRondas = FindAnyObjectByType<Manager_Rondas>();
     }
@@ -58,10 +67,31 @@ public class PlayerStats : MonoBehaviour
     public void RecibirGolpe(int daño, AttackType tipoDeAtaque, Hurtbox.HurtboxType hurtboxImpactada)
     {
         if (isDead) return;
+
+        // Lógica de reproducción de audio (Al rival)
+        if (movement != null && movement.rival != null)
+        {
+            PlayerCombat combatRival = movement.rival.GetComponent<PlayerCombat>();
+            if (combatRival != null)
+            {
+                combatRival.ReproducirSonidoImpacto(movement.isBlocking);
+            }
+        }
+
+        // REACCIÓN AL GOLPE EN ESTADO DIZZY (FATALITY)
         if (isDizzy)
         {
             isDead = true;
-            anim.Play("Hit_UpperCut", 0, 0f);
+
+            if (anim != null)
+            {
+                // 1. Forzamos la animación Hit_UpperCut en el frame exacto que definas
+                anim.Play("Hit_UpperCut", 0, freezeFrameNormalized);
+
+                // 2. Congelamos el tiempo del Animator para evitar que vuelva a Idle
+                anim.speed = 0f;
+            }
+
             AplicarKnockback();
             if (managerRondas != null) managerRondas.ReportarGolpeFatality(movement.playerNumber);
             return;
@@ -112,6 +142,10 @@ public class PlayerStats : MonoBehaviour
             else isDead = true;
 
             if (managerRondas != null) managerRondas.ReportarMuerte(movement.playerNumber);
+
+            // Apagamos los scripts de control
+            if (movement != null) movement.enabled = false;
+            if (combat != null) combat.enabled = false;
         }
     }
 

@@ -712,6 +712,10 @@ MonoBehaviour:
   esScorpion: 1
   esSubZero: 0
   esKitana: 0
+  clipGolpeNormal: {fileID: 8300000, guid: f9961e31e38a146429df78c240a573ca, type: 3}
+  clipGolpeBloqueado: {fileID: 8300000, guid: 4b28bd2f11c7f264fbb373bd708be87d, type: 3}
+  clipGetOverHere: {fileID: 8300000, guid: bc682c2856411854193778a38456a3c5, type: 3}
+  clipComeHere: {fileID: 8300000, guid: b2bd35042111bbe48a7dbf5c7721d00f, type: 3}
   comboLimit: 1
   cooldownDuration: 0.3
   kickCooldownDuration: 0.3
