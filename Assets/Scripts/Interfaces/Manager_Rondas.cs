@@ -26,10 +26,20 @@ public class Manager_Rondas : MonoBehaviour
 
     private GameObject jugador1;
     private GameObject jugador2;
+
+    // Componentes del Jugador 1
     private PlayerCombat combatJ1;
-    private PlayerCombat combatJ2;
+    private PlayerMovement movJ1;
+    private PlayerController ctrlJ1;
     private Animator animJ1;
+    private Rigidbody2D rbJ1;
+
+    // Componentes del Jugador 2
+    private PlayerCombat combatJ2;
+    private PlayerMovement movJ2;
+    private PlayerController ctrlJ2;
     private Animator animJ2;
+    private Rigidbody2D rbJ2;
 
     private bool faseFatalityActiva = false;
     private bool peleaTerminada = false;
@@ -39,11 +49,20 @@ public class Manager_Rondas : MonoBehaviour
         jugador1 = j1;
         jugador2 = j2;
 
+        // Capturamos todos los scripts clave de ambos personajes
         combatJ1 = jugador1.GetComponentInChildren<PlayerCombat>(true);
-        combatJ2 = jugador2.GetComponentInChildren<PlayerCombat>(true);
+        movJ1 = jugador1.GetComponentInChildren<PlayerMovement>(true);
+        ctrlJ1 = jugador1.GetComponentInChildren<PlayerController>(true);
         animJ1 = jugador1.GetComponentInChildren<Animator>(true);
-        animJ2 = jugador2.GetComponentInChildren<Animator>(true);
+        rbJ1 = jugador1.GetComponent<Rigidbody2D>();
 
+        combatJ2 = jugador2.GetComponentInChildren<PlayerCombat>(true);
+        movJ2 = jugador2.GetComponentInChildren<PlayerMovement>(true);
+        ctrlJ2 = jugador2.GetComponentInChildren<PlayerController>(true);
+        animJ2 = jugador2.GetComponentInChildren<Animator>(true);
+        rbJ2 = jugador2.GetComponent<Rigidbody2D>();
+
+        // Congelamos todo al iniciar
         CongelarJugadores(true);
         StartCoroutine(RutinaInicioRonda());
     }
@@ -66,6 +85,7 @@ public class Manager_Rondas : MonoBehaviour
             uiFight.SetActive(false);
         }
 
+        // Se descongela y se activan los controles para pelear
         CongelarJugadores(false);
     }
 
@@ -107,11 +127,37 @@ public class Manager_Rondas : MonoBehaviour
 
         TipoPersonaje perdedorTipo = perdedorNum == 1 ? Datos_Partida.personajeJugador1 : Datos_Partida.personajeJugador2;
         Animator animPerdedor = perdedorNum == 1 ? animJ1 : animJ2;
-        PlayerCombat combatGanador = perdedorNum == 1 ? combatJ2 : combatJ1;
 
+        // Forzar animación de mareo
         animPerdedor.Play("Dizzy", 0, 0f);
-        combatGanador.isFrozen = false;
 
+        // BLOQUEO ABSOLUTO: Desactivamos por completo los controles del perdedor
+        if (perdedorNum == 1)
+        {
+            if (movJ1 != null) movJ1.enabled = false;
+            if (ctrlJ1 != null) ctrlJ1.enabled = false;
+            if (combatJ1 != null) combatJ1.enabled = false;
+            if (rbJ1 != null) rbJ1.linearVelocity = Vector2.zero;
+
+            // Nos aseguramos de que el ganador (J2) SÍ se pueda mover libremente para el golpe final
+            if (movJ2 != null) movJ2.enabled = true;
+            if (ctrlJ2 != null) ctrlJ2.enabled = true;
+            if (combatJ2 != null) combatJ2.enabled = true;
+        }
+        else
+        {
+            if (movJ2 != null) movJ2.enabled = false;
+            if (ctrlJ2 != null) ctrlJ2.enabled = false;
+            if (combatJ2 != null) combatJ2.enabled = false;
+            if (rbJ2 != null) rbJ2.linearVelocity = Vector2.zero;
+
+            // Nos aseguramos de que el ganador (J1) SÍ se pueda mover libremente para el golpe final
+            if (movJ1 != null) movJ1.enabled = true;
+            if (ctrlJ1 != null) ctrlJ1.enabled = true;
+            if (combatJ1 != null) combatJ1.enabled = true;
+        }
+
+        // Mostrar Letrero Finish Him / Her
         if (perdedorTipo == TipoPersonaje.Kitana)
         {
             if (clipFinishHer != null) audioSource.PlayOneShot(clipFinishHer);
@@ -129,9 +175,11 @@ public class Manager_Rondas : MonoBehaviour
         if (!faseFatalityActiva || peleaTerminada) return;
         peleaTerminada = true;
 
+        // Ocultar letreros de la fase de ejecución
         if (uiFinishHim != null) uiFinishHim.SetActive(false);
         if (uiFinishHer != null) uiFinishHer.SetActive(false);
 
+        // Congelamos a ambos permanentemente al terminar
         CongelarJugadores(true);
 
         int ganadorNum = perdedorNum == 1 ? 2 : 1;
@@ -163,7 +211,24 @@ public class Manager_Rondas : MonoBehaviour
 
     private void CongelarJugadores(bool estado)
     {
-        if (combatJ1 != null) combatJ1.isFrozen = estado;
-        if (combatJ2 != null) combatJ2.isFrozen = estado;
+        // Si 'estado' es true, desactivamos los scripts (activarComponentes = false)
+        bool activarComponentes = !estado;
+
+        // Jugador 1
+        if (movJ1 != null) movJ1.enabled = activarComponentes;
+        if (ctrlJ1 != null) ctrlJ1.enabled = activarComponentes;
+        if (combatJ1 != null) combatJ1.enabled = activarComponentes;
+
+        // Jugador 2
+        if (movJ2 != null) movJ2.enabled = activarComponentes;
+        if (ctrlJ2 != null) ctrlJ2.enabled = activarComponentes;
+        if (combatJ2 != null) combatJ2.enabled = activarComponentes;
+
+        // Si los estamos congelando, forzamos que sus velocidades físicas vayan a 0 de inmediato
+        if (estado)
+        {
+            if (rbJ1 != null) rbJ1.linearVelocity = Vector2.zero;
+            if (rbJ2 != null) rbJ2.linearVelocity = Vector2.zero;
+        }
     }
 }
